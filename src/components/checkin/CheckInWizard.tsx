@@ -288,139 +288,137 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
   return (
     <div
       id="checkin-wizard-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-xs overflow-y-auto select-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-zinc-900/40 backdrop-blur-xs overflow-y-auto select-none"
     >
-      <div className="bg-slate-900 max-w-4xl w-full rounded-2xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] my-auto">
+      <div className="bg-white max-w-3xl w-full rounded-2xl border border-zinc-200 shadow-xl overflow-hidden flex flex-col max-h-[90vh] my-auto">
         {/* Header */}
-        <div className="bg-slate-850 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800">
+        <div className="bg-white px-5 py-4 flex items-center justify-between border-b border-zinc-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold">
-              <UserPlus className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center font-semibold text-zinc-700">
+              <UserPlus className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-[11px] font-semibold text-indigo-400">Front Desk Operations</div>
-              <h2 className="text-base font-bold text-white">Guest Check-In Wizard</h2>
-              <p className="text-xs text-slate-400 font-mono-numbers">
-                Step {currentStep} of 4 • Guest Onboarding & Room Allocation
+              <h2 className="text-sm font-semibold text-zinc-900">Guest Check-In</h2>
+              <p className="text-xs text-zinc-400 font-mono-numbers">
+                Step {currentStep} of 4 • Guest details & room allocation
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+            className="p-1 text-zinc-400 hover:text-zinc-700 rounded-lg hover:bg-zinc-100 transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Wizard Steps Navigation Bar */}
-        <div className="bg-slate-950/60 border-b border-slate-800 px-6 py-3 flex items-center justify-between text-xs">
+        <div className="bg-zinc-50 border-b border-zinc-200 px-5 py-2.5 flex items-center justify-between text-xs">
           {[
-            { step: 1, label: 'Guest Lookup' },
-            { step: 2, label: 'KYC & Identity' },
-            { step: 3, label: 'Room & Tariff' },
-            { step: 4, label: 'Folio & Confirm' },
+            { step: 1, label: 'Lookup' },
+            { step: 2, label: 'Guest & KYC' },
+            { step: 3, label: 'Room & Rate' },
+            { step: 4, label: 'Confirm' },
           ].map((s) => (
             <div
               key={s.step}
               onClick={() => {
                 if (s.step < currentStep) setCurrentStep(s.step);
               }}
-              className={`flex items-center gap-2 transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
                 currentStep === s.step
-                  ? 'text-white font-bold'
+                  ? 'text-zinc-900 font-semibold'
                   : currentStep > s.step
-                  ? 'text-emerald-400 font-medium'
-                  : 'text-slate-500'
+                  ? 'text-zinc-600 font-medium'
+                  : 'text-zinc-400'
               }`}
             >
               <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${
+                className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold ${
                   currentStep === s.step
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-zinc-900 text-white'
                     : currentStep > s.step
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                    : 'bg-slate-800 text-slate-400 border border-slate-700'
+                    ? 'bg-zinc-200 text-zinc-700'
+                    : 'bg-zinc-100 text-zinc-400 border border-zinc-200'
                 }`}
               >
                 {currentStep > s.step ? '✓' : s.step}
               </div>
-              <span className="hidden sm:inline font-medium text-xs">{s.label}</span>
+              <span className="hidden sm:inline text-xs">{s.label}</span>
             </div>
           ))}
         </div>
 
         {/* Body Steps */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6 text-white text-xs">
+        <div className="p-5 overflow-y-auto flex-1 space-y-5 text-zinc-900 text-xs">
           {/* STEP 1: GUEST LOOKUP */}
           {currentStep === 1 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <span className="text-[11px] font-semibold text-indigo-400">Step 1 of 4</span>
-                <h3 className="text-base font-bold text-white mt-0.5">Search Returning Guest or Walk-In</h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  Search the guest repository to link past stay history and avoid duplicate records.
+                <h3 className="text-sm font-semibold text-zinc-900">Find Guest or Add Walk-In</h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Search existing guest profiles to preserve stay history and loyalty notes.
                 </p>
               </div>
 
               {/* Search Bar */}
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search by name, phone (+91...), email, or ID number..."
+                  placeholder="Search by name, phone, email, or ID number..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                  className="w-full pl-8 pr-3 py-2 text-xs bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                 />
               </div>
 
               {/* Matching Existing Guests Table */}
               {searchQuery.trim() && (
                 <div className="space-y-2">
-                  <div className="text-xs font-semibold text-slate-400">
-                    Search Results ({matchingGuests.length})
+                  <div className="text-xs font-medium text-zinc-500">
+                    Results ({matchingGuests.length})
                   </div>
                   {matchingGuests.length > 0 ? (
-                    <div className="border border-slate-700 rounded-xl divide-y divide-slate-800 bg-slate-850 overflow-hidden">
+                    <div className="border border-zinc-200 rounded-xl divide-y divide-zinc-100 bg-white overflow-hidden shadow-xs">
                       {matchingGuests.map((g) => (
                         <div
                           key={g.id}
-                          className="p-3.5 hover:bg-slate-800 transition-colors flex items-center justify-between gap-4"
+                          className="p-3 hover:bg-zinc-50 transition-colors flex items-center justify-between gap-4"
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-lg bg-slate-700 text-white font-bold flex items-center justify-center text-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-zinc-100 text-zinc-700 font-semibold flex items-center justify-center text-xs">
                               {g.fullName.charAt(0)}
                             </div>
                             <div>
-                              <div className="font-semibold text-white text-xs flex items-center gap-2">
+                              <div className="font-semibold text-zinc-900 text-xs flex items-center gap-1.5">
                                 {g.fullName}
                                 {g.isVip && (
-                                  <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-medium">
+                                  <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-1 rounded font-medium">
                                     VIP
                                   </span>
                                 )}
                               </div>
-                              <div className="text-[11px] text-slate-400 flex items-center gap-3 mt-0.5 font-mono-numbers">
-                                <span>Phone: {g.phone}</span>
+                              <div className="text-[11px] text-zinc-400 flex items-center gap-3 mt-0.5 font-mono-numbers">
+                                <span>{g.phone}</span>
                                 <span>{g.idType.toUpperCase()}: {g.idNumber}</span>
-                                <span>{g.totalStaysCount} Stays</span>
+                                <span>{g.totalStaysCount} stays</span>
                               </div>
                             </div>
                           </div>
 
                           <button
                             onClick={() => handleSelectExistingGuest(g)}
-                            className="px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
+                            className="px-3 py-1 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                           >
-                            <span>Select Profile</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
+                            <span>Select</span>
+                            <ArrowRight className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <div className="p-6 text-center text-slate-400 text-xs border border-dashed border-slate-700 rounded-xl">
+                    <div className="p-4 text-center text-zinc-400 text-xs border border-dashed border-zinc-200 rounded-xl">
                       No matching guest found for "{searchQuery}".
                     </div>
                   )}
@@ -428,11 +426,11 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
               )}
 
               {/* Or Create New Guest Walk-In Box */}
-              <div className="p-5 bg-slate-800/80 border border-slate-700 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div>
-                  <h4 className="font-bold text-white text-sm">First-time walk-in guest?</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Proceed to capture contact, KYC ID, and address details.
+                  <h4 className="font-semibold text-zinc-900 text-xs">First-time walk-in guest?</h4>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Proceed to capture contact information, KYC ID, and address details.
                   </p>
                 </div>
                 <button
@@ -443,10 +441,10 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                     setGuestId(generateId('GST'));
                     setCurrentStep(2);
                   }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg flex items-center gap-2 whitespace-nowrap transition-colors cursor-pointer shadow-sm"
+                  className="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs rounded-lg flex items-center gap-1.5 whitespace-nowrap transition-colors cursor-pointer shadow-xs"
                 >
-                  <UserPlus className="w-4 h-4" />
-                  <span>Create New Guest Profile</span>
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>New Guest Profile</span>
                 </button>
               </div>
             </div>
@@ -454,50 +452,49 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
 
           {/* STEP 2: GUEST DETAILS & KYC */}
           {currentStep === 2 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-semibold text-indigo-400">Step 2 of 4</span>
-                  <h3 className="text-base font-bold text-white mt-0.5">Guest Information & KYC Documents</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <h3 className="text-sm font-semibold text-zinc-900">Guest Information & KYC</h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
                     {isNewGuest
-                      ? 'Capture new guest contact details and identification credentials.'
-                      : `Updating profile for ${fullName} (${guestId})`}
+                      ? 'Capture guest contact details and identification credentials.'
+                      : `Updating profile for ${fullName}`}
                   </p>
                 </div>
-                <span className="text-xs font-mono-numbers px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                  ID: {guestId}
+                <span className="text-xs font-mono-numbers px-2 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
+                  {guestId}
                 </span>
               </div>
 
               {/* Duplicate Alert if triggered */}
               {duplicateWarning.length > 0 && (
-                <div className="p-4 bg-amber-950/30 border border-amber-500/40 rounded-xl text-amber-200 space-y-3">
-                  <div className="flex items-center gap-2 font-bold text-xs text-amber-300">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Possible Existing Guest Record Found</span>
+                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 space-y-2 text-xs">
+                  <div className="flex items-center gap-1.5 font-semibold text-amber-900">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span>Possible Existing Guest Found</span>
                   </div>
-                  <p className="text-xs text-amber-300/80">
-                    A record with matching phone number or ID number exists in the database.
+                  <p className="text-zinc-600">
+                    A record with matching phone or ID number already exists.
                   </p>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1.5">
                     {duplicateWarning.map((dg) => (
                       <div
                         key={dg.id}
-                        className="bg-slate-900/80 p-3 rounded-lg border border-amber-500/30 flex items-center justify-between text-xs"
+                        className="bg-white p-2.5 rounded-lg border border-amber-200 flex items-center justify-between text-xs"
                       >
                         <div>
-                          <div className="font-semibold text-white">{dg.fullName} ({dg.id})</div>
-                          <div className="text-slate-400 text-[11px]">
-                            Phone: {dg.phone} • {dg.idType.toUpperCase()}: {dg.idNumber}
+                          <div className="font-semibold text-zinc-900">{dg.fullName} ({dg.id})</div>
+                          <div className="text-zinc-500 text-[11px]">
+                            {dg.phone} • {dg.idType.toUpperCase()}: {dg.idNumber}
                           </div>
                         </div>
                         <button
                           onClick={() => handleSelectExistingGuest(dg)}
-                          className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold rounded text-xs cursor-pointer"
+                          className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded text-xs cursor-pointer"
                         >
-                          Use This Profile
+                          Use Profile
                         </button>
                       </div>
                     ))}
@@ -509,20 +506,20 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                         setDuplicateWarning([]);
                         setCurrentStep(3);
                       }}
-                      className="text-xs text-amber-400 hover:underline cursor-pointer"
+                      className="text-xs text-zinc-700 hover:underline cursor-pointer font-medium"
                     >
-                      Ignore & continue creating as new guest →
+                      Ignore and create as new guest →
                     </button>
                   </div>
                 </div>
               )}
 
               {/* Personal Details Form */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
                 {/* Full Name */}
                 <div className="sm:col-span-2">
-                  <label className="block font-medium text-slate-300 mb-1">
-                    Full Name <span className="text-rose-400">*</span>
+                  <label className="block font-medium text-zinc-700 mb-1">
+                    Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -530,56 +527,56 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                     placeholder="e.g. Vikramaditya Sharma"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">
-                    Mobile Phone <span className="text-rose-400">*</span>
+                  <label className="block font-medium text-zinc-700 mb-1">
+                    Mobile Phone <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="e.g. +91 98765 43210"
+                    placeholder="+91 98765 43210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Email Address</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Email Address</label>
                   <input
                     type="email"
                     placeholder="guest@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 {/* Nationality */}
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Nationality</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Nationality</label>
                   <input
                     type="text"
                     placeholder="e.g. Indian"
                     value={nationality}
                     onChange={(e) => setNationality(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 {/* Gender */}
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Gender</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Gender</label>
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -590,46 +587,46 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
 
                 {/* Address */}
                 <div className="sm:col-span-2">
-                  <label className="block font-medium text-slate-300 mb-1">Permanent Residential Address</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Residential Address</label>
                   <input
                     type="text"
-                    placeholder="Street / House / Colony"
+                    placeholder="Street / House / Area"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 {/* City & State */}
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">City / State</label>
+                  <label className="block font-medium text-zinc-700 mb-1">City / State</label>
                   <input
                     type="text"
                     placeholder="e.g. Mumbai, Maharashtra"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* KYC Document Section */}
-              <div className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl space-y-3">
+              <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <h4 className="text-xs font-semibold text-white">Identity Document & Verification</h4>
+                  <div className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <h4 className="text-xs font-semibold text-zinc-900">Identity Verification</h4>
                   </div>
-                  <span className="text-[11px] text-slate-400">Government ID</span>
+                  <span className="text-[11px] text-zinc-400">Government ID</span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                   <div>
-                    <label className="block font-medium text-slate-300 mb-1">Document Type</label>
+                    <label className="block font-medium text-zinc-700 mb-1">Document Type</label>
                     <select
                       value={idType}
                       onChange={(e) => setIdType(e.target.value as any)}
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                      className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none"
                     >
                       <option value="aadhaar">Aadhaar Card (UIDAI)</option>
                       <option value="passport">Passport</option>
@@ -641,30 +638,30 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                   </div>
 
                   <div>
-                    <label className="block font-medium text-slate-300 mb-1">Document Number</label>
+                    <label className="block font-medium text-zinc-700 mb-1">Document Number</label>
                     <input
                       type="text"
                       placeholder="e.g. 4829 3810 9482"
                       value={idNumber}
                       onChange={(e) => setIdNumber(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono-numbers placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                      className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers placeholder-zinc-400 focus:border-zinc-900 focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-medium text-slate-300 mb-1">Expiry Date (Optional)</label>
+                    <label className="block font-medium text-zinc-700 mb-1">Expiry Date (Optional)</label>
                     <input
                       type="date"
                       value={idExpiryDate}
                       onChange={(e) => setIdExpiryDate(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                      className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Upload & Attached Documents */}
-                <div className="pt-2">
-                  <div className="flex items-center gap-3">
+                <div className="pt-1">
+                  <div className="flex items-center gap-2.5">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -675,34 +672,34 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-3.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-white font-medium text-xs rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-100 text-zinc-800 font-medium text-xs rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                     >
-                      <Upload className="w-3.5 h-3.5" />
-                      <span>Upload ID Scan / PDF</span>
+                      <Upload className="w-3 h-3" />
+                      <span>Upload Document</span>
                     </button>
-                    <span className="text-[11px] text-slate-500">JPG, PNG, or PDF (Max 5MB)</span>
+                    <span className="text-[11px] text-zinc-400">JPG, PNG, or PDF (Max 5MB)</span>
                   </div>
 
                   {documents.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                       {documents.map((docItem) => (
                         <div
                           key={docItem.id}
-                          className="p-2.5 bg-slate-900 border border-slate-700 rounded-lg flex items-center justify-between text-xs"
+                          className="p-2 bg-white border border-zinc-200 rounded-lg flex items-center justify-between text-xs"
                         >
                           <div className="flex items-center gap-2 truncate">
-                            <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
+                            <FileText className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
                             <div className="truncate">
-                              <div className="font-medium text-white truncate">{docItem.name}</div>
-                              <div className="text-[10px] text-emerald-400">Verified Attachment</div>
+                              <div className="font-medium text-zinc-900 truncate">{docItem.name}</div>
+                              <div className="text-[10px] text-emerald-700 font-medium">Verified</div>
                             </div>
                           </div>
                           <button
                             type="button"
                             onClick={() => setDocuments(documents.filter((d) => d.id !== docItem.id))}
-                            className="text-slate-400 hover:text-rose-400 p-1 cursor-pointer"
+                            className="text-zinc-400 hover:text-rose-600 p-1 cursor-pointer"
                           >
-                            <X className="w-3.5 h-3.5" />
+                            <X className="w-3 h-3" />
                           </button>
                         </div>
                       ))}
@@ -712,29 +709,29 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
               </div>
 
               {/* Emergency Contact */}
-              <div className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl">
-                <h4 className="text-xs font-semibold text-slate-300 mb-2">Emergency Contact (Optional)</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl">
+                <h4 className="text-xs font-semibold text-zinc-800 mb-2">Emergency Contact (Optional)</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                   <input
                     type="text"
                     placeholder="Contact Name"
                     value={emergencyName}
                     onChange={(e) => setEmergencyName(e.target.value)}
-                    className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:outline-none"
                   />
                   <input
                     type="tel"
                     placeholder="Emergency Phone"
                     value={emergencyPhone}
                     onChange={(e) => setEmergencyPhone(e.target.value)}
-                    className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono-numbers placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers placeholder-zinc-400 focus:border-zinc-900 focus:outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Relationship (e.g. Spouse)"
                     value={emergencyRelationship}
                     onChange={(e) => setEmergencyRelationship(e.target.value)}
-                    className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+                    className="px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
               </div>
@@ -743,75 +740,74 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
 
           {/* STEP 3: ROOM SELECTION */}
           {currentStep === 3 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <span className="text-[11px] font-semibold text-indigo-400">Step 3 of 4</span>
-                <h3 className="text-base font-bold text-white mt-0.5">Select Room & Stay Duration</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="text-sm font-semibold text-zinc-900">Select Room & Duration</h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
                   Pick an available room and configure dates, rate, and guest occupancy.
                 </p>
               </div>
 
               {/* Stay Dates & Guest Counts */}
-              <div className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 text-xs">
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Check-In Date & Time</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Check-In</label>
                   <input
                     type="datetime-local"
                     value={checkInDateTime}
                     onChange={(e) => setCheckInDateTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Expected Checkout</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Expected Checkout</label>
                   <input
                     type="datetime-local"
                     value={expectedCheckOutDateTime}
                     onChange={(e) => setExpectedCheckOutDateTime(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-2.5 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Adults (18+)</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Adults (18+)</label>
                   <input
                     type="number"
                     min="1"
                     max="6"
                     value={adultsCount}
                     onChange={(e) => setAdultsCount(parseInt(e.target.value) || 1)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-semibold font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 font-semibold font-mono-numbers focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">Children (0-17)</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Children (0-17)</label>
                   <input
                     type="number"
                     min="0"
                     max="4"
                     value={childrenCount}
                     onChange={(e) => setChildrenCount(parseInt(e.target.value) || 0)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-semibold font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 font-semibold font-mono-numbers focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Room Grid Picker */}
               <div>
-                <div className="flex items-center justify-between mb-2.5">
-                  <h4 className="text-xs font-semibold text-white flex items-center gap-2">
-                    <BedDouble className="w-4 h-4 text-indigo-400" />
-                    Available Rooms Matrix
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-semibold text-zinc-900 flex items-center gap-1.5">
+                    <BedDouble className="w-3.5 h-3.5 text-zinc-600" />
+                    Available Rooms
                   </h4>
-                  <span className="text-xs text-indigo-400 font-semibold font-mono-numbers">
-                    {nights} Night{nights > 1 ? 's' : ''} Stay Duration
+                  <span className="text-xs text-zinc-600 font-medium font-mono-numbers">
+                    {nights} Night{nights > 1 ? 's' : ''}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                   {rooms.map((room) => {
                     const isAvail = room.status === 'available';
                     const isSelected = selectedRoomId === room.id;
@@ -822,34 +818,34 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                         onClick={() => {
                           if (isAvail) setSelectedRoomId(room.id);
                         }}
-                        className={`p-3.5 rounded-xl border transition-all text-xs flex flex-col justify-between h-28 relative ${
+                        className={`p-3 rounded-xl border transition-all text-xs flex flex-col justify-between h-24 relative ${
                           !isAvail
-                            ? 'opacity-40 bg-slate-900/40 border-slate-800 cursor-not-allowed'
+                            ? 'opacity-40 bg-zinc-100 border-zinc-200 cursor-not-allowed'
                             : isSelected
-                            ? 'border-indigo-500 bg-indigo-950/30 shadow-sm cursor-pointer'
-                            : 'bg-slate-800/80 border-slate-700 hover:border-slate-500 cursor-pointer'
+                            ? 'border-zinc-900 bg-zinc-50 shadow-xs cursor-pointer ring-1 ring-zinc-900'
+                            : 'bg-white border-zinc-200 hover:border-zinc-400 cursor-pointer shadow-xs'
                         }`}
                       >
                         <div className="flex items-start justify-between">
                           <div>
-                            <div className="text-base font-bold font-mono-numbers text-white">
+                            <div className="text-sm font-semibold font-mono-numbers text-zinc-900">
                               #{room.roomNumber}
                             </div>
-                            <div className="text-[11px] font-medium text-slate-300 mt-0.5">
+                            <div className="text-[11px] text-zinc-500">
                               {room.type}
                             </div>
                           </div>
                           {isSelected && (
-                            <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-zinc-900 shrink-0" />
                           )}
                         </div>
 
-                        <div className="pt-2 border-t border-slate-700/60 flex items-center justify-between">
-                          <span className="font-semibold text-white font-mono-numbers">
+                        <div className="pt-1.5 border-t border-zinc-100 flex items-center justify-between text-[11px]">
+                          <span className="font-semibold text-zinc-900 font-mono-numbers">
                             {formatCurrency(room.baseRate, settings.currencySymbol)}
-                            <span className="text-[10px] text-slate-400 font-normal">/nt</span>
+                            <span className="text-[10px] text-zinc-400 font-normal">/nt</span>
                           </span>
-                          <span className="text-[11px] text-slate-400">Fl {room.floor}</span>
+                          <span className="text-zinc-400">Fl {room.floor}</span>
                         </div>
                       </div>
                     );
@@ -858,56 +854,56 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
               </div>
 
               {/* Pricing Customization & Special Requests */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">
-                    Room Rate Per Night ({settings.currencySymbol})
+                  <label className="block font-medium text-zinc-700 mb-1">
+                    Room Rate ({settings.currencySymbol}/night)
                   </label>
                   <input
                     type="number"
                     placeholder={`Default: ${selectedRoom?.baseRate || 3000}`}
                     value={customRate}
                     onChange={(e) => setCustomRate(e.target.value ? parseFloat(e.target.value) : '')}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">
-                    Total Discount ({settings.currencySymbol})
+                  <label className="block font-medium text-zinc-700 mb-1">
+                    Discount ({settings.currencySymbol})
                   </label>
                   <input
                     type="number"
                     min="0"
                     value={discountAmount}
                     onChange={(e) => setDiscountAmount(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-300 mb-1">GST / Tax Rate (%)</label>
+                  <label className="block font-medium text-zinc-700 mb-1">Tax / GST Rate (%)</label>
                   <select
                     value={taxRate}
                     onChange={(e) => setTaxRate(parseFloat(e.target.value))}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 focus:bg-white focus:border-zinc-900 focus:outline-none"
                   >
                     <option value="12">12% Standard Hotel GST</option>
                     <option value="18">18% Luxury Suite GST</option>
-                    <option value="0">0% Zero Tax / Exempt</option>
+                    <option value="0">0% Exempt</option>
                   </select>
                 </div>
               </div>
 
               {/* Special Requests */}
               <div>
-                <label className="block font-medium text-slate-300 mb-1">Purpose of Visit & Special Requests</label>
+                <label className="block font-medium text-zinc-700 mb-1">Special Requests & Notes</label>
                 <input
                   type="text"
-                  placeholder="e.g. Business conference, high floor, quiet room"
+                  placeholder="e.g. Early check-in, quiet room, extra key card"
                   value={specialRequests}
                   onChange={(e) => setSpecialRequests(e.target.value)}
-                  className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none text-xs"
+                  className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none text-xs"
                 />
               </div>
             </div>
@@ -915,67 +911,66 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
 
           {/* STEP 4: REVIEW & CONFIRM */}
           {currentStep === 4 && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <span className="text-[11px] font-semibold text-indigo-400">Step 4 of 4</span>
-                <h3 className="text-base font-bold text-white mt-0.5">Review Folio & Confirm Check-In</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Verify reservation parameters and optionally collect an advance deposit.
+                <h3 className="text-sm font-semibold text-zinc-900">Review & Confirm Check-In</h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  Verify reservation details and optionally collect an advance deposit.
                 </p>
               </div>
 
               {/* Summary Card */}
-              <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-5 space-y-4">
-                <div className="flex items-start justify-between border-b border-slate-700 pb-3">
+              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-3.5">
+                <div className="flex items-start justify-between border-b border-zinc-200 pb-3">
                   <div>
-                    <div className="text-xs font-semibold text-indigo-400">Guest & Stay Allocation</div>
-                    <div className="text-base font-bold text-white mt-0.5">{fullName}</div>
-                    <div className="text-xs text-slate-400 mt-0.5 font-mono-numbers">
-                      Phone: {phone} • ID: {idType.toUpperCase()} ({idNumber || 'Verified'})
+                    <div className="text-[11px] font-medium text-zinc-500">Guest & Reservation</div>
+                    <div className="text-sm font-semibold text-zinc-900 mt-0.5">{fullName}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5 font-mono-numbers">
+                      {phone} • {idType.toUpperCase()}: {idNumber || 'Verified'}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold font-mono-numbers text-white">
+                    <div className="text-base font-semibold font-mono-numbers text-zinc-900">
                       Room #{selectedRoom?.roomNumber}
                     </div>
-                    <div className="text-xs text-slate-400">{selectedRoom?.type} (Floor {selectedRoom?.floor})</div>
+                    <div className="text-xs text-zinc-500">{selectedRoom?.type} (Fl {selectedRoom?.floor})</div>
                   </div>
                 </div>
 
                 {/* Stay Breakdown */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-slate-300">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs text-zinc-600">
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Check-In</span>
-                    <span className="font-medium text-white">{new Date(checkInDateTime).toLocaleDateString()}</span>
+                    <span className="text-zinc-400 block text-[10px]">Check-In</span>
+                    <span className="font-medium text-zinc-900">{new Date(checkInDateTime).toLocaleDateString()}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Exp. Checkout</span>
-                    <span className="font-medium text-white">{new Date(expectedCheckOutDateTime).toLocaleDateString()}</span>
+                    <span className="text-zinc-400 block text-[10px]">Exp. Checkout</span>
+                    <span className="font-medium text-zinc-900">{new Date(expectedCheckOutDateTime).toLocaleDateString()}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Duration</span>
-                    <span className="font-medium text-white font-mono-numbers">{nights} Night{nights > 1 ? 's' : ''}</span>
+                    <span className="text-zinc-400 block text-[10px]">Duration</span>
+                    <span className="font-medium text-zinc-900 font-mono-numbers">{nights} night{nights > 1 ? 's' : ''}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">Guests</span>
-                    <span className="font-medium text-white">{adultsCount} Adults{childrenCount > 0 ? `, ${childrenCount} Ch.` : ''}</span>
+                    <span className="text-zinc-400 block text-[10px]">Occupancy</span>
+                    <span className="font-medium text-zinc-900">{adultsCount} Adults{childrenCount > 0 ? `, ${childrenCount} Ch.` : ''}</span>
                   </div>
                 </div>
 
                 {/* Folio Financial Estimate */}
-                <div className="bg-slate-900 p-3.5 rounded-lg border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                  <div className="space-y-0.5 text-slate-300">
+                <div className="bg-white p-3 rounded-lg border border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs">
+                  <div className="space-y-0.5 text-zinc-600">
                     <div>
                       Tariff: {nights} nights × {formatCurrency(roomBaseRate, settings.currencySymbol)} = {formatCurrency(roomSubtotal, settings.currencySymbol)}
                     </div>
                     {discountAmount > 0 && (
-                      <div className="text-emerald-400">Discount: -{formatCurrency(discountAmount, settings.currencySymbol)}</div>
+                      <div className="text-emerald-700">Discount: -{formatCurrency(discountAmount, settings.currencySymbol)}</div>
                     )}
                     <div>GST ({taxRate}%): +{formatCurrency(estTaxAmount, settings.currencySymbol)}</div>
                   </div>
                   <div className="text-right">
-                    <span className="text-[11px] text-slate-400 block">Estimated Grand Total</span>
-                    <span className="text-lg font-bold text-white font-mono-numbers">
+                    <span className="text-[10px] text-zinc-400 block">Estimated Total</span>
+                    <span className="text-base font-semibold text-zinc-900 font-mono-numbers">
                       {formatCurrency(estGrandTotal, settings.currencySymbol)}
                     </span>
                   </div>
@@ -983,11 +978,11 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
               </div>
 
               {/* Advance Payment Option */}
-              <div className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl space-y-3 text-xs">
+              <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-indigo-400" />
-                    <h4 className="font-semibold text-white">Collect Advance Deposit / Payment?</h4>
+                  <div className="flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5 text-zinc-700" />
+                    <h4 className="font-semibold text-zinc-900">Collect Advance Deposit?</h4>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -999,16 +994,16 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                           setAdvanceAmount(Math.round(estGrandTotal / 2));
                         }
                       }}
-                      className="w-4 h-4 rounded text-indigo-600 bg-slate-900 border-slate-700 focus:ring-0"
+                      className="rounded text-zinc-900 border-zinc-300 focus:ring-0"
                     />
-                    <span className="font-medium text-white">Record Advance Now</span>
+                    <span className="font-medium text-zinc-700">Record Advance Now</span>
                   </label>
                 </div>
 
                 {collectAdvance && (
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1.5">
                     <div>
-                      <label className="block font-medium text-slate-300 mb-1">
+                      <label className="block font-medium text-zinc-700 mb-1">
                         Advance Amount ({settings.currencySymbol})
                       </label>
                       <input
@@ -1016,17 +1011,17 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                         min="1"
                         value={advanceAmount}
                         onChange={(e) => setAdvanceAmount(parseFloat(e.target.value) || 0)}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:border-zinc-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block font-medium text-slate-300 mb-1">Payment Method</label>
+                      <label className="block font-medium text-zinc-700 mb-1">Payment Method</label>
                       <select
                         value={advanceMethod}
                         onChange={(e) => setAdvanceMethod(e.target.value as any)}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none"
                       >
-                        <option value="upi">UPI / QR Code</option>
+                        <option value="upi">UPI / QR</option>
                         <option value="card">Credit / Debit Card</option>
                         <option value="cash">Cash</option>
                         <option value="bank_transfer">Bank Transfer</option>
@@ -1034,13 +1029,13 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                       </select>
                     </div>
                     <div>
-                      <label className="block font-medium text-slate-300 mb-1">Transaction Ref / Note</label>
+                      <label className="block font-medium text-zinc-700 mb-1">Transaction Ref / Note</label>
                       <input
                         type="text"
                         placeholder="e.g. UPI/2026/9842"
                         value={advanceRefNumber}
                         onChange={(e) => setAdvanceRefNumber(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+                        className="w-full px-3 py-1.5 bg-white border border-zinc-200 rounded-lg text-zinc-900 focus:border-zinc-900 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -1051,28 +1046,28 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="bg-slate-850 border-t border-slate-800 px-6 py-4 flex items-center justify-between text-xs">
+        <div className="bg-white border-t border-zinc-100 px-5 py-3 flex items-center justify-between text-xs">
           {currentStep > 1 ? (
             <button
               type="button"
               onClick={() => setCurrentStep((prev) => prev - 1)}
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1.5 transition-colors cursor-pointer font-medium"
+              className="px-3.5 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 flex items-center gap-1 transition-colors cursor-pointer font-medium"
             >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous Step</span>
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </button>
           ) : (
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer font-medium"
+              className="px-3.5 py-1.5 rounded-lg text-zinc-500 hover:text-zinc-800 hover:bg-zinc-100 transition-colors cursor-pointer font-medium"
             >
               Cancel
             </button>
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {currentStep === 1 && (
               <button
                 type="button"
@@ -1081,10 +1076,10 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                   setSelectedExistingGuest(null);
                   setCurrentStep(2);
                 }}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+                className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
               >
                 <span>Continue</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             )}
 
@@ -1093,10 +1088,10 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                 type="button"
                 id="btn-step2-next"
                 onClick={handleCheckDuplicatesAndProceed}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+                className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
               >
                 <span>Select Room</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             )}
 
@@ -1111,10 +1106,10 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                   }
                   setCurrentStep(4);
                 }}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-sm"
+                className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
               >
-                <span>Review Stay & Folio</span>
-                <ChevronRight className="w-4 h-4" />
+                <span>Review Folio</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             )}
 
@@ -1124,17 +1119,17 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                 id="btn-confirm-checkin-final"
                 disabled={isSubmitting}
                 onClick={handleFinalSubmit}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-sm transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                className="px-5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg shadow-xs transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    <span>Allocating Room & Checking In...</span>
+                    <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    <span>Checking In...</span>
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Confirm & Check In Guest</span>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Confirm & Check In</span>
                   </>
                 )}
               </button>

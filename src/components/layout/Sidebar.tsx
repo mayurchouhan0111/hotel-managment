@@ -10,8 +10,7 @@ import {
   BarChart3,
   Settings,
   History,
-  ShieldCheck,
-  Building2,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -36,8 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
       id: 'rooms',
       label: 'Rooms Matrix',
       icon: BedDouble,
-      badge: cleaningRooms > 0 ? `${cleaningRooms} Cleaning` : undefined,
-      badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+      badge: cleaningRooms > 0 ? `${cleaningRooms}` : undefined,
       roles: ['receptionist', 'manager', 'admin'] as const,
     },
     {
@@ -45,7 +43,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
       label: 'Active Stays',
       icon: Users,
       badge: activeStays.length > 0 ? `${activeStays.length}` : undefined,
-      badgeColor: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
       roles: ['receptionist', 'manager', 'admin'] as const,
     },
     {
@@ -62,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
     },
     {
       id: 'reports',
-      label: 'Analytics & RevPAR',
+      label: 'Reports & Revenue',
       icon: BarChart3,
       roles: ['manager', 'admin'] as const,
     },
@@ -74,18 +71,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
     },
     {
       id: 'settings',
-      label: 'Hotel Settings',
+      label: 'Settings',
       icon: Settings,
       roles: ['admin'] as const,
     },
   ];
 
   return (
-    <aside id="app-sidebar" className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 select-none">
+    <aside id="app-sidebar" className="w-60 bg-white text-zinc-700 flex flex-col shrink-0 border-r border-zinc-200 select-none">
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Navigation
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <div className="px-3 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+          Overview
         </div>
 
         {navItems.map((item) => {
@@ -100,20 +97,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
               key={item.id}
               id={`nav-${item.id}`}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-indigo-600 text-white shadow-sm font-semibold'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                  ? 'bg-zinc-900 text-white font-medium shadow-xs'
+                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100/70'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                <span className="truncate">{item.label}</span>
+              <div className="flex items-center gap-2.5">
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                <span>{item.label}</span>
               </div>
               {item.badge && (
                 <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                    isActive ? 'bg-indigo-700 text-white' : item.badgeColor || 'bg-slate-800 text-slate-300'
+                  className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono-numbers ${
+                    isActive ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-100 text-zinc-600 border border-zinc-200/80'
                   }`}
                 >
                   {item.badge}
@@ -124,22 +121,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
         })}
       </nav>
 
-      {/* Footer Info Box */}
-      <div className="p-3.5 m-3 bg-slate-800/60 rounded-xl border border-slate-700/60 text-xs">
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-1.5 text-white font-semibold text-xs">
-            <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Property Cloud PMS</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-            <span className="text-[10px] font-medium text-emerald-400">Online</span>
-          </div>
+      {/* Minimal Footer */}
+      <div className="p-3 border-t border-zinc-100 text-xs text-zinc-500 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span className="text-[11px] font-medium text-zinc-600">Live PMS</span>
         </div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">
-          GST-compliant billing, real-time KYC repository & operational logs.
-        </p>
+        <span className="text-[10px] text-zinc-400 font-mono-numbers">v2.4.0</span>
       </div>
     </aside>
   );
 };
+

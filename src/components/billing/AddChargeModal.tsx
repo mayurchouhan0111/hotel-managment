@@ -72,39 +72,36 @@ export const AddChargeModal: React.FC<AddChargeModalProps> = ({ stay, isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs select-none">
-      <div className="bg-slate-900 max-w-lg w-full p-6 rounded-2xl border border-slate-700 shadow-2xl space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-xs select-none">
+      <div className="bg-white max-w-lg w-full p-5 rounded-2xl border border-zinc-200 shadow-xl space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between pb-3 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold">
-              <PlusCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-[11px] font-semibold text-indigo-400">Folio Billing</div>
-              <h3 className="text-base font-bold text-white">Post Charge to Ledger</h3>
-              <p className="text-xs text-slate-400 font-mono-numbers">
-                Room #{stay.roomNumber} • {stay.guestName}
-              </p>
-            </div>
+        <div className="flex items-start justify-between pb-3 border-b border-zinc-100">
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900">Post Charge to Ledger</h3>
+            <p className="text-xs text-zinc-500 font-mono-numbers">
+              Room #{stay.roomNumber} • {stay.guestName}
+            </p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer">
-            <X className="w-5 h-5" />
+          <button
+            onClick={onClose}
+            className="text-zinc-400 hover:text-zinc-700 p-1 rounded-lg hover:bg-zinc-100 cursor-pointer transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {/* Category */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">Charge Category</label>
+            <label className="block font-medium text-zinc-700 mb-1">Charge Category</label>
             <select
               value={category}
               onChange={(e) => handleCategoryChange(e.target.value as any)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 focus:bg-white focus:border-zinc-900 focus:outline-none"
             >
               {settings.chargeCategories.map((c) => (
                 <option key={c.key} value={c.key}>
-                  {c.label} (Default GST: {c.defaultTaxRate}%)
+                  {c.label} (GST: {c.defaultTaxRate}%)
                 </option>
               ))}
             </select>
@@ -112,8 +109,8 @@ export const AddChargeModal: React.FC<AddChargeModalProps> = ({ stay, isOpen, on
 
           {/* Description */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">
-              Charge Description <span className="text-rose-400">*</span>
+            <label className="block font-medium text-zinc-700 mb-1">
+              Description <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -121,27 +118,27 @@ export const AddChargeModal: React.FC<AddChargeModalProps> = ({ stay, isOpen, on
               placeholder="e.g. Club Sandwich & Fresh Lime Soda"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
             />
           </div>
 
           {/* Price, Quantity, Discount Grid */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2.5">
             <div>
-              <label className="block font-medium text-slate-300 mb-1">Quantity</label>
+              <label className="block font-medium text-zinc-700 mb-1">Quantity</label>
               <input
                 type="number"
                 min="1"
                 required
                 value={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-300 mb-1">
-                Unit Price ({settings.currencySymbol}) <span className="text-rose-400">*</span>
+              <label className="block font-medium text-zinc-700 mb-1">
+                Price ({settings.currencySymbol}) <span className="text-rose-500">*</span>
               </label>
               <input
                 type="number"
@@ -151,54 +148,54 @@ export const AddChargeModal: React.FC<AddChargeModalProps> = ({ stay, isOpen, on
                 placeholder="0.00"
                 value={unitPrice}
                 onChange={(e) => setUnitPrice(e.target.value ? parseFloat(e.target.value) : '')}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-300 mb-1">GST Tax (%)</label>
+              <label className="block font-medium text-zinc-700 mb-1">GST Tax (%)</label>
               <input
                 type="number"
                 min="0"
                 max="28"
                 value={taxRate}
                 onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+                className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Real-time Calculation Summary Box */}
-          <div className="p-3.5 bg-slate-800/80 border border-slate-700 rounded-xl space-y-1.5 font-mono-numbers text-xs">
-            <div className="flex items-center justify-between text-slate-400">
-              <span>Taxable Subtotal:</span>
+          <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1 font-mono-numbers text-xs">
+            <div className="flex items-center justify-between text-zinc-500">
+              <span>Subtotal:</span>
               <span>{formatCurrency(calc.subtotal, settings.currencySymbol)}</span>
             </div>
-            <div className="flex items-center justify-between text-slate-400">
+            <div className="flex items-center justify-between text-zinc-500">
               <span>Tax ({taxRate}%):</span>
               <span>+{formatCurrency(calc.taxAmount, settings.currencySymbol)}</span>
             </div>
-            <div className="pt-2 border-t border-slate-700 flex items-center justify-between font-bold text-white text-sm">
-              <span>Charge Total:</span>
-              <span className="text-indigo-400 font-mono-numbers">
+            <div className="pt-1.5 border-t border-zinc-200 flex items-center justify-between font-semibold text-zinc-900 text-xs">
+              <span>Total Charge:</span>
+              <span className="font-mono-numbers">
                 {formatCurrency(calc.total, settings.currencySymbol)}
               </span>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+          <div className="pt-2 border-t border-zinc-100 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer font-medium"
+              className="px-3.5 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg shadow-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? 'Posting...' : 'Post Charge'}
             </button>
@@ -208,3 +205,4 @@ export const AddChargeModal: React.FC<AddChargeModalProps> = ({ stay, isOpen, on
     </div>
   );
 };
+

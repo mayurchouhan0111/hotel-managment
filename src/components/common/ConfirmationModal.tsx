@@ -31,53 +31,53 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   const actualVariant = isDangerous ? 'danger' : variant;
 
-  let btnColor = 'bg-rose-600 hover:bg-rose-500 text-white';
-  let iconBg = 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+  let btnColor = 'bg-rose-600 hover:bg-rose-700 text-white';
+  let iconBg = 'bg-rose-50 text-rose-600 border border-rose-200';
 
   if (actualVariant === 'warning') {
-    btnColor = 'bg-amber-600 hover:bg-amber-500 text-white';
-    iconBg = 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+    btnColor = 'bg-amber-600 hover:bg-amber-700 text-white';
+    iconBg = 'bg-amber-50 text-amber-600 border border-amber-200';
   } else if (actualVariant === 'primary') {
-    btnColor = 'bg-indigo-600 hover:bg-indigo-500 text-white';
-    iconBg = 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30';
+    btnColor = 'bg-zinc-900 hover:bg-zinc-800 text-white';
+    iconBg = 'bg-zinc-100 text-zinc-700 border border-zinc-200';
   }
 
   return (
     <AnimatePresence>
       <div
         id="confirmation-modal-backdrop"
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs select-none"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-xs select-none"
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-slate-900 max-w-md w-full p-6 rounded-2xl border border-slate-700 shadow-2xl space-y-5"
+          exit={{ opacity: 0, scale: 0.96 }}
+          className="bg-white max-w-md w-full p-5 rounded-2xl border border-zinc-200 shadow-xl space-y-4"
         >
-          <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-xl shrink-0 ${iconBg}`}>
-              <AlertTriangle className="w-5 h-5" />
+          <div className="flex items-start gap-3">
+            <div className={`p-2.5 rounded-xl shrink-0 ${iconBg}`}>
+              <AlertTriangle className="w-4 h-4" />
             </div>
             <div className="flex-1">
-              <h3 className="text-base font-bold text-white">{title}</h3>
-              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">{message}</p>
+              <h3 className="text-sm font-semibold text-zinc-900">{title}</h3>
+              <p className="text-xs text-zinc-500 mt-1 leading-relaxed">{message}</p>
             </div>
             <button
               onClick={onCancel}
               disabled={isLoading}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer"
+              className="text-zinc-400 hover:text-zinc-700 p-1 rounded-lg hover:bg-zinc-100 cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex items-center justify-end gap-3 text-xs">
+          <div className="flex items-center justify-end gap-2 text-xs pt-2">
             <button
               id="confirm-modal-cancel-btn"
               type="button"
               onClick={onCancel}
               disabled={isLoading}
-              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer font-medium"
+              className="px-3.5 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer font-medium"
             >
               {cancelLabel}
             </button>
@@ -86,10 +86,10 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               type="button"
               onClick={onConfirm}
               disabled={isLoading}
-              className={`px-5 py-2 font-semibold rounded-lg shadow-sm transition-colors disabled:opacity-50 flex items-center gap-2 cursor-pointer ${btnColor}`}
+              className={`px-4 py-1.5 font-medium rounded-lg shadow-xs transition-colors disabled:opacity-50 flex items-center gap-1.5 cursor-pointer ${btnColor}`}
             >
               {isLoading && (
-                <span className="inline-block w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                <span className="inline-block w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
               )}
               {confirmLabel}
             </button>

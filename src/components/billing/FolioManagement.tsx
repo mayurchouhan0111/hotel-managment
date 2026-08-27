@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHotel } from '../../context/HotelContext';
-import { Folio, FolioCharge, FolioPayment, Invoice, Stay } from '../../types/hotel';
+import { Invoice, Stay } from '../../types/hotel';
 import { AddChargeModal } from './AddChargeModal';
 import { AddPaymentModal } from './AddPaymentModal';
 import { CheckoutModal } from './CheckoutModal';
@@ -11,13 +11,7 @@ import {
   LogOut,
   Receipt,
   Search,
-  CheckCircle2,
-  AlertTriangle,
   Ban,
-  Download,
-  Calendar,
-  Layers,
-  Sparkles,
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { formatDateTime } from '../../utils/date';
@@ -29,7 +23,6 @@ interface FolioManagementProps {
 
 export const FolioManagement: React.FC<FolioManagementProps> = ({
   initialFolioId,
-  onOpenGuestProfile,
 }) => {
   const { folios, stays, settings, voidCharge, getInvoiceByStayId } = useHotel();
   const [selectedFolioId, setSelectedFolioId] = useState<string | null>(
@@ -86,27 +79,25 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
   return (
     <div id="folio-management-view" className="space-y-6 select-none">
       {/* Top Banner */}
-      <div className="bg-slate-800/90 p-5 rounded-xl border border-slate-700/70 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold text-indigo-400">Financial Ledger</span>
-            <span className="text-slate-500">•</span>
-            <span className="text-xs text-slate-400 font-mono-numbers">Multi-Charge Billing Engine</span>
-          </div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2.5">
-            <CreditCard className="w-5 h-5 text-indigo-400" />
-            Billing, Folios & Invoicing Ledger
+          <h2 className="text-base font-semibold text-zinc-900 flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-zinc-600" />
+            Billing & Folios
           </h2>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Guest billing ledgers, room charges, and tax settlements
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs">
-            <span className="text-slate-400 block text-[10px]">Total Folios</span>
-            <span className="font-bold text-white font-mono-numbers">{folios.length}</span>
+        <div className="flex items-center gap-2.5">
+          <div className="px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-xs">
+            <span className="text-zinc-400 block text-[10px]">Total Folios</span>
+            <span className="font-semibold text-zinc-900 font-mono-numbers">{folios.length}</span>
           </div>
-          <div className="px-3.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs">
-            <span className="text-slate-400 block text-[10px]">Receivables</span>
-            <span className="font-bold text-rose-400 font-mono-numbers">
+          <div className="px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-xs">
+            <span className="text-zinc-400 block text-[10px]">Receivables</span>
+            <span className="font-semibold text-rose-700 font-mono-numbers">
               {formatCurrency(
                 folios.reduce((acc, f) => acc + (f.balanceDue || 0), 0),
                 settings.currencySymbol
@@ -119,43 +110,43 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
       {/* Main Folio Workspace: Master List (Left) + Detail Statement (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Folios List (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-3">
           {/* Search and Filters */}
-          <div className="bg-slate-800/90 p-3.5 rounded-xl border border-slate-700/70 shadow-sm space-y-3 text-xs">
+          <div className="bg-white p-3 rounded-2xl border border-zinc-200 shadow-xs space-y-2.5 text-xs">
             <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search guest, room #, folio ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-xs focus:border-indigo-500 focus:outline-none"
+                className="w-full pl-8 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 text-xs focus:bg-white focus:border-zinc-900 focus:outline-none"
               />
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="font-medium text-slate-400 text-xs">Filter:</span>
-              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-700 text-slate-400 text-xs">
+              <span className="font-medium text-zinc-500 text-xs">Filter:</span>
+              <div className="flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg text-zinc-600 text-xs">
                 <button
                   onClick={() => setStatusFilter('all')}
-                  className={`px-2.5 py-0.5 rounded-md transition-colors cursor-pointer ${
-                    statusFilter === 'all' ? 'bg-indigo-600 text-white font-semibold' : 'hover:text-white'
+                  className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                    statusFilter === 'all' ? 'bg-white text-zinc-900 font-medium shadow-xs' : 'hover:text-zinc-900'
                   }`}
                 >
                   All ({folios.length})
                 </button>
                 <button
                   onClick={() => setStatusFilter('open')}
-                  className={`px-2.5 py-0.5 rounded-md transition-colors cursor-pointer ${
-                    statusFilter === 'open' ? 'bg-indigo-600 text-white font-semibold' : 'hover:text-white'
+                  className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                    statusFilter === 'open' ? 'bg-white text-zinc-900 font-medium shadow-xs' : 'hover:text-zinc-900'
                   }`}
                 >
-                  Open Due
+                  Open
                 </button>
                 <button
                   onClick={() => setStatusFilter('settled')}
-                  className={`px-2.5 py-0.5 rounded-md transition-colors cursor-pointer ${
-                    statusFilter === 'settled' ? 'bg-indigo-600 text-white font-semibold' : 'hover:text-white'
+                  className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                    statusFilter === 'settled' ? 'bg-white text-zinc-900 font-medium shadow-xs' : 'hover:text-zinc-900'
                   }`}
                 >
                   Settled
@@ -165,9 +156,9 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
           </div>
 
           {/* List of Folio Cards */}
-          <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
+          <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
             {filteredFolios.length === 0 ? (
-              <div className="p-8 text-center bg-slate-800/90 rounded-xl border border-slate-700 text-slate-400 text-xs">
+              <div className="p-8 text-center bg-white rounded-2xl border border-zinc-200 text-zinc-400 text-xs">
                 No folios matching your search.
               </div>
             ) : (
@@ -179,50 +170,50 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
                   <div
                     key={f.id}
                     onClick={() => setSelectedFolioId(f.id)}
-                    className={`p-4 rounded-xl border transition-all cursor-pointer text-xs space-y-2.5 ${
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer text-xs space-y-2 ${
                       isSelected
-                        ? 'border-indigo-500 bg-indigo-950/30 shadow-sm'
-                        : 'bg-slate-800/80 border-slate-700/70 hover:border-slate-500'
+                        ? 'border-zinc-900 bg-zinc-50 shadow-xs'
+                        : 'bg-white border-zinc-200 hover:border-zinc-300'
                     }`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-mono-numbers font-bold px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-white text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono-numbers font-semibold px-2 py-0.5 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-900 text-xs">
                           #{f.roomNumber}
                         </span>
                         <div>
-                          <div className="font-semibold text-white">{f.guestName}</div>
-                          <div className="text-[11px] text-slate-400 font-mono-numbers">{f.id}</div>
+                          <div className="font-semibold text-zinc-900">{f.guestName}</div>
+                          <div className="text-[11px] text-zinc-400 font-mono-numbers">{f.id}</div>
                         </div>
                       </div>
 
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-md font-medium ${
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                           f.status === 'settled'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-rose-50 text-rose-700 border border-rose-200'
                         }`}
                       >
                         {f.status === 'settled' ? 'Settled' : 'Open Due'}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-700/60 text-[11px] font-mono-numbers">
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-zinc-100 text-[11px] font-mono-numbers">
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Total</span>
-                        <span className="font-medium text-slate-200">
+                        <span className="text-zinc-400 block text-[10px]">Total</span>
+                        <span className="font-medium text-zinc-800">
                           {formatCurrency(f.grandTotal, settings.currencySymbol)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Paid</span>
-                        <span className="font-medium text-emerald-400">
+                        <span className="text-zinc-400 block text-[10px]">Paid</span>
+                        <span className="font-medium text-emerald-700">
                           {formatCurrency(f.totalPaid, settings.currencySymbol)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">Balance</span>
-                        <span className={`font-bold ${balance > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        <span className="text-zinc-400 block text-[10px]">Balance</span>
+                        <span className={`font-semibold ${balance > 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
                           {formatCurrency(balance, settings.currencySymbol)}
                         </span>
                       </div>
@@ -237,45 +228,45 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
         {/* Right Column: Active Folio Statement & Itemized Charges (7 cols) */}
         <div className="lg:col-span-7">
           {selectedFolio ? (
-            <div className="bg-slate-800/90 rounded-xl border border-slate-700/70 shadow-sm overflow-hidden flex flex-col h-full">
+            <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs overflow-hidden flex flex-col h-full">
               {/* Statement Header */}
-              <div className="p-6 border-b border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-850">
+              <div className="p-5 border-b border-zinc-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-50/50">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono-numbers font-bold text-lg text-white px-2.5 py-0.5 rounded-lg bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+                    <span className="font-mono-numbers font-semibold text-sm text-zinc-900 px-2 py-0.5 rounded-md bg-white border border-zinc-200">
                       Room #{selectedFolio.roomNumber}
                     </span>
-                    <span className="text-base font-bold text-white">
+                    <span className="text-sm font-semibold text-zinc-900">
                       {selectedFolio.guestName}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 font-mono-numbers">
-                    Folio ID: {selectedFolio.id} • Stay: {selectedFolio.stayId}
+                  <p className="text-xs text-zinc-400 mt-0.5 font-mono-numbers">
+                    Folio: {selectedFolio.id} • Stay: {selectedFolio.stayId}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {currentStay?.status === 'active' && (
                     <>
                       <button
                         onClick={() => setChargeModalStay(currentStay)}
-                        className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-2.5 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-800 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                       >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Add Charge</span>
+                        <Plus className="w-3.5 h-3.5 text-zinc-500" />
+                        <span>Charge</span>
                       </button>
 
                       <button
                         onClick={() => setPaymentModalStay(currentStay)}
-                        className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-2.5 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-800 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                       >
-                        <CreditCard className="w-3.5 h-3.5" />
-                        <span>Add Payment</span>
+                        <CreditCard className="w-3.5 h-3.5 text-zinc-500" />
+                        <span>Payment</span>
                       </button>
 
                       <button
                         onClick={() => setCheckoutModalStay(currentStay)}
-                        className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold text-xs shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
                         <span>Checkout</span>
@@ -285,39 +276,39 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
 
                   <button
                     onClick={handleOpenInvoice}
-                    className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-2.5 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                   >
-                    <Receipt className="w-3.5 h-3.5" />
-                    <span>View Invoice</span>
+                    <Receipt className="w-3.5 h-3.5 text-zinc-500" />
+                    <span>Invoice</span>
                   </button>
                 </div>
               </div>
 
               {/* Financial Metrics Cards */}
-              <div className="p-6 grid grid-cols-2 sm:grid-cols-4 gap-3 border-b border-slate-700/60 bg-slate-900/60 font-mono-numbers text-xs">
-                <div className="p-3 bg-slate-800 border border-slate-700 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block">Subtotal</span>
-                  <span className="text-sm font-bold text-white">
+              <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5 border-b border-zinc-100 bg-zinc-50/30 font-mono-numbers text-xs">
+                <div className="p-2.5 bg-white border border-zinc-200 rounded-xl">
+                  <span className="text-[10px] text-zinc-400 block">Subtotal</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">
                     {formatCurrency(selectedFolio.subtotal, settings.currencySymbol)}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-800 border border-slate-700 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block">Tax / GST</span>
-                  <span className="text-sm font-bold text-white">
+                <div className="p-2.5 bg-white border border-zinc-200 rounded-xl">
+                  <span className="text-[10px] text-zinc-400 block">GST Tax</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">
                     {formatCurrency(selectedFolio.totalTax, settings.currencySymbol)}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-800 border border-slate-700 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block">Total Payments</span>
-                  <span className="text-sm font-bold text-emerald-400">
+                <div className="p-2.5 bg-white border border-zinc-200 rounded-xl">
+                  <span className="text-[10px] text-zinc-400 block">Total Paid</span>
+                  <span className="text-xs font-semibold text-emerald-700 mt-0.5 block">
                     {formatCurrency(selectedFolio.totalPaid, settings.currencySymbol)}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-800 border border-slate-700 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block">Outstanding</span>
+                <div className="p-2.5 bg-white border border-zinc-200 rounded-xl">
+                  <span className="text-[10px] text-zinc-400 block">Outstanding</span>
                   <span
-                    className={`text-sm font-bold ${
-                      selectedFolio.balanceDue > 0 ? 'text-rose-400' : 'text-emerald-400'
+                    className={`text-xs font-semibold mt-0.5 block ${
+                      selectedFolio.balanceDue > 0 ? 'text-rose-700' : 'text-emerald-700'
                     }`}
                   >
                     {formatCurrency(selectedFolio.balanceDue, settings.currencySymbol)}
@@ -326,67 +317,67 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
               </div>
 
               {/* Itemized Charges Table */}
-              <div className="p-6 flex-1 overflow-y-auto space-y-6">
+              <div className="p-5 flex-1 overflow-y-auto space-y-5 text-xs">
                 <div>
-                  <div className="flex items-center justify-between mb-2.5">
-                    <h3 className="text-xs font-semibold text-white uppercase tracking-wider">
-                      Itemized Folio Charges ({selectedFolio.charges.length})
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-semibold text-zinc-900">
+                      Itemized Charges ({selectedFolio.charges.length})
                     </h3>
                   </div>
 
                   {selectedFolio.charges.length === 0 ? (
-                    <div className="p-6 text-center text-slate-400 text-xs border border-dashed border-slate-700 rounded-xl">
+                    <div className="p-6 text-center text-zinc-400 text-xs border border-dashed border-zinc-200 rounded-xl">
                       No charges posted to this folio yet.
                     </div>
                   ) : (
-                    <div className="border border-slate-700 rounded-xl overflow-hidden">
+                    <div className="border border-zinc-200 rounded-xl overflow-hidden">
                       <table className="w-full text-left text-xs">
-                        <thead className="bg-slate-900 text-slate-400 border-b border-slate-700">
+                        <thead className="bg-zinc-50 text-zinc-600 border-b border-zinc-200">
                           <tr>
-                            <th className="py-2.5 px-3.5 font-semibold">Description</th>
-                            <th className="py-2.5 px-3.5 font-semibold">Category</th>
-                            <th className="py-2.5 px-3.5 font-semibold text-center">Qty</th>
-                            <th className="py-2.5 px-3.5 font-semibold text-right">Tax</th>
-                            <th className="py-2.5 px-3.5 font-semibold text-right">Amount</th>
-                            <th className="py-2.5 px-3.5 font-semibold text-right">Action</th>
+                            <th className="py-2 px-3 font-medium">Description</th>
+                            <th className="py-2 px-3 font-medium">Category</th>
+                            <th className="py-2 px-3 font-medium text-center">Qty</th>
+                            <th className="py-2 px-3 font-medium text-right">Tax</th>
+                            <th className="py-2 px-3 font-medium text-right">Total</th>
+                            <th className="py-2 px-3 font-medium text-right">Action</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-700/60 bg-slate-850">
+                        <tbody className="divide-y divide-zinc-100 bg-white">
                           {selectedFolio.charges.map((charge) => (
                             <tr
                               key={charge.id}
-                              className={`hover:bg-slate-800 transition-colors ${
-                                charge.voided ? 'opacity-40 line-through bg-slate-900/50' : ''
+                              className={`hover:bg-zinc-50/50 transition-colors ${
+                                charge.voided ? 'opacity-40 line-through bg-zinc-50' : ''
                               }`}
                             >
-                              <td className="py-3 px-3.5">
-                                <div className="font-medium text-white">{charge.description}</div>
+                              <td className="py-2 px-3">
+                                <div className="font-medium text-zinc-900">{charge.description}</div>
                                 {charge.voided && (
-                                  <div className="text-[10px] text-rose-400 font-semibold no-underline">
+                                  <div className="text-[10px] text-rose-600 font-medium no-underline">
                                     Voided: {charge.voidReason}
                                   </div>
                                 )}
                               </td>
-                              <td className="py-3 px-3.5">
-                                <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[11px] text-slate-300">
+                              <td className="py-2 px-3">
+                                <span className="px-1.5 py-0.5 rounded bg-zinc-100 border border-zinc-200 text-[10px] text-zinc-600">
                                   {charge.category}
                                 </span>
                               </td>
-                              <td className="py-3 px-3.5 text-center font-mono-numbers text-slate-300">
+                              <td className="py-2 px-3 text-center font-mono-numbers text-zinc-600">
                                 {charge.quantity}
                               </td>
-                              <td className="py-3 px-3.5 text-right font-mono-numbers text-slate-400">
+                              <td className="py-2 px-3 text-right font-mono-numbers text-zinc-500">
                                 {formatCurrency(charge.taxAmount, settings.currencySymbol)}
                               </td>
-                              <td className="py-3 px-3.5 text-right font-mono-numbers font-semibold text-white">
+                              <td className="py-2 px-3 text-right font-mono-numbers font-semibold text-zinc-900">
                                 {formatCurrency(charge.total, settings.currencySymbol)}
                               </td>
-                              <td className="py-3 px-3.5 text-right">
+                              <td className="py-2 px-3 text-right">
                                 {!charge.voided && currentStay?.status === 'active' && (
                                   <button
                                     onClick={() => handleVoidCharge(charge.id)}
                                     title="Void Charge"
-                                    className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                                    className="p-1 rounded text-zinc-400 hover:text-rose-600 hover:bg-zinc-100 transition-colors cursor-pointer"
                                   >
                                     <Ban className="w-3.5 h-3.5" />
                                   </button>
@@ -402,42 +393,42 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
 
                 {/* Payments Section */}
                 <div>
-                  <h3 className="text-xs font-semibold text-white uppercase tracking-wider mb-2.5">
-                    Payments & Settlement Receipts ({selectedFolio.payments.length})
+                  <h3 className="text-xs font-semibold text-zinc-900 mb-2">
+                    Recorded Payments ({selectedFolio.payments.length})
                   </h3>
 
                   {selectedFolio.payments.length === 0 ? (
-                    <div className="p-4 text-center text-slate-400 text-xs border border-dashed border-slate-700 rounded-xl">
+                    <div className="p-4 text-center text-zinc-400 text-xs border border-dashed border-zinc-200 rounded-xl">
                       No payments recorded yet.
                     </div>
                   ) : (
-                    <div className="border border-slate-700 rounded-xl overflow-hidden">
+                    <div className="border border-zinc-200 rounded-xl overflow-hidden">
                       <table className="w-full text-left text-xs">
-                        <thead className="bg-slate-900 text-slate-400 border-b border-slate-700">
+                        <thead className="bg-zinc-50 text-zinc-600 border-b border-zinc-200">
                           <tr>
-                            <th className="py-2.5 px-3.5 font-semibold">Payment ID</th>
-                            <th className="py-2.5 px-3.5 font-semibold">Method</th>
-                            <th className="py-2.5 px-3.5 font-semibold">Reference</th>
-                            <th className="py-2.5 px-3.5 font-semibold">Date & Time</th>
-                            <th className="py-2.5 px-3.5 font-semibold text-right">Amount</th>
+                            <th className="py-2 px-3 font-medium">Payment ID</th>
+                            <th className="py-2 px-3 font-medium">Method</th>
+                            <th className="py-2 px-3 font-medium">Reference</th>
+                            <th className="py-2 px-3 font-medium">Date</th>
+                            <th className="py-2 px-3 font-medium text-right">Amount</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-700/60 bg-slate-850">
+                        <tbody className="divide-y divide-zinc-100 bg-white">
                           {selectedFolio.payments.map((p) => (
-                            <tr key={p.id} className="hover:bg-slate-800 transition-colors">
-                              <td className="py-3 px-3.5 font-mono-numbers text-slate-400">{p.id}</td>
-                              <td className="py-3 px-3.5">
-                                <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium uppercase">
+                            <tr key={p.id} className="hover:bg-zinc-50/50 transition-colors">
+                              <td className="py-2 px-3 font-mono-numbers text-zinc-400">{p.id}</td>
+                              <td className="py-2 px-3">
+                                <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-medium uppercase">
                                   {p.method}
                                 </span>
                               </td>
-                              <td className="py-3 px-3.5 font-mono-numbers text-slate-300">
+                              <td className="py-2 px-3 font-mono-numbers text-zinc-600">
                                 {p.referenceNumber || '—'}
                               </td>
-                              <td className="py-3 px-3.5 text-slate-400">
+                              <td className="py-2 px-3 text-zinc-500">
                                 {formatDateTime(p.timestamp)}
                               </td>
-                              <td className="py-3 px-3.5 text-right font-mono-numbers font-semibold text-emerald-400">
+                              <td className="py-2 px-3 text-right font-mono-numbers font-semibold text-emerald-700">
                                 +{formatCurrency(p.amount, settings.currencySymbol)}
                               </td>
                             </tr>
@@ -450,8 +441,8 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
               </div>
             </div>
           ) : (
-            <div className="bg-slate-800/90 rounded-xl border border-slate-700 p-12 text-center text-slate-400">
-              Select a folio from the left list to view statement and charges.
+            <div className="bg-white rounded-2xl border border-zinc-200 p-12 text-center text-zinc-400 text-xs">
+              Select a folio from the list to view statement and charges.
             </div>
           )}
         </div>
@@ -496,3 +487,4 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
     </div>
   );
 };
+

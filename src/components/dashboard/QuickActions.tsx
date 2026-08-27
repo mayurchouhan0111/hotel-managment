@@ -25,58 +25,47 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     {
       id: 'quick-checkin',
       title: 'New Check-In',
-      description: 'KYC onboarding & room key assignment',
+      description: 'KYC & room key assignment',
       icon: UserPlus,
-      accent: 'bg-indigo-600 hover:bg-indigo-500 text-white',
-      badge: 'Arrival',
-      badgeColor: 'bg-indigo-700/80 text-white',
+      primary: true,
       onClick: onNewCheckIn,
     },
     {
       id: 'quick-charge',
-      title: 'Post Service Charge',
-      description: 'Room dining, laundry, minibar, or spa',
+      title: 'Add Charge',
+      description: 'Dining, laundry, or room service',
       icon: PlusCircle,
-      accent: 'bg-slate-800 hover:bg-slate-700/90 text-white border border-slate-700',
-      badge: 'Add Charge',
-      badgeColor: 'bg-slate-700 text-slate-300',
+      primary: false,
       onClick: onOpenQuickCharge,
     },
     {
       id: 'quick-payment',
       title: 'Record Payment',
-      description: 'UPI QR, credit/debit card, or cash',
+      description: 'UPI QR, cards, or cash',
       icon: CreditCard,
-      accent: 'bg-slate-800 hover:bg-slate-700/90 text-white border border-slate-700',
-      badge: 'Settlement',
-      badgeColor: 'bg-slate-700 text-slate-300',
+      primary: false,
       onClick: onOpenQuickPayment,
     },
     {
       id: 'quick-checkout',
       title: 'Express Checkout',
-      description: 'Settle folio & generate GST tax invoice',
+      description: 'Settle folio & GST invoice',
       icon: LogOut,
-      accent: 'bg-slate-800 hover:bg-slate-700/90 text-white border border-slate-700',
-      badge: 'Departure',
-      badgeColor: 'bg-slate-700 text-slate-300',
+      primary: false,
       onClick: onOpenQuickCheckout,
     },
   ];
 
   return (
-    <div className="bg-slate-800/90 p-5 rounded-xl border border-slate-700/70 shadow-sm select-none">
-      <div className="flex items-center justify-between mb-3.5">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold text-white">
-            Front Desk Quick Actions
-          </h2>
-          <span className="text-slate-500">•</span>
-          <span className="text-xs text-slate-400">Frequent Workflows</span>
-        </div>
+    <div className="bg-white p-4 rounded-xl border border-zinc-200 shadow-xs select-none">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xs font-semibold text-zinc-900 uppercase tracking-wider">
+          Quick Operations
+        </h2>
+        <span className="text-[11px] text-zinc-400">Common desk actions</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
         {actions.map((action) => {
           const Icon = action.icon;
           return (
@@ -84,20 +73,19 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
               key={action.id}
               id={action.id}
               onClick={action.onClick}
-              className={`p-4 rounded-xl text-left transition-all duration-150 flex flex-col justify-between cursor-pointer group shadow-sm ${action.accent}`}
+              className={`p-3 rounded-lg text-left transition-colors cursor-pointer group border flex flex-col justify-between ${
+                action.primary
+                  ? 'bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-800'
+                  : 'bg-zinc-50/50 hover:bg-zinc-100/70 border-zinc-200 text-zinc-900'
+              }`}
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${action.badgeColor}`}>
-                  {action.badge}
-                </span>
-                <ArrowUpRight className="w-4 h-4 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              <div className="flex items-center justify-between mb-2">
+                <Icon className={`w-4 h-4 ${action.primary ? 'text-zinc-300' : 'text-zinc-600'}`} />
+                <ArrowUpRight className={`w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity ${action.primary ? 'text-white' : 'text-zinc-700'}`} />
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Icon className="w-4 h-4 text-indigo-300" />
-                  <h3 className="font-semibold text-sm text-white">{action.title}</h3>
-                </div>
-                <p className="text-xs text-slate-300/90 leading-relaxed">{action.description}</p>
+                <div className={`font-medium text-xs ${action.primary ? 'text-white' : 'text-zinc-900'}`}>{action.title}</div>
+                <p className={`text-[11px] mt-0.5 ${action.primary ? 'text-zinc-300' : 'text-zinc-500'}`}>{action.description}</p>
               </div>
             </button>
           );
@@ -106,3 +94,4 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     </div>
   );
 };
+

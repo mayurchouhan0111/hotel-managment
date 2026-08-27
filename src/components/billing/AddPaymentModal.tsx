@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHotel } from '../../context/HotelContext';
 import { Stay, PaymentMethod } from '../../types/hotel';
-import { CreditCard, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 
 interface AddPaymentModalProps {
@@ -50,54 +50,51 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({ stay, isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs select-none">
-      <div className="bg-slate-900 max-w-lg w-full p-6 rounded-2xl border border-slate-700 shadow-2xl space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-xs select-none">
+      <div className="bg-white max-w-lg w-full p-5 rounded-2xl border border-zinc-200 shadow-xl space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between pb-3 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold">
-              <CreditCard className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-[11px] font-semibold text-emerald-400">Payment Receipt</div>
-              <h3 className="text-base font-bold text-white">Record Payment & Settle</h3>
-              <p className="text-xs text-slate-400 font-mono-numbers">
-                Room #{stay.roomNumber} • {stay.guestName}
-              </p>
-            </div>
+        <div className="flex items-start justify-between pb-3 border-b border-zinc-100">
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900">Record Payment</h3>
+            <p className="text-xs text-zinc-500 font-mono-numbers">
+              Room #{stay.roomNumber} • {stay.guestName}
+            </p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 cursor-pointer">
-            <X className="w-5 h-5" />
+          <button
+            onClick={onClose}
+            className="text-zinc-400 hover:text-zinc-700 p-1 rounded-lg hover:bg-zinc-100 cursor-pointer transition-colors"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Current Folio Summary Box */}
-        <div className="p-4 bg-slate-800/80 border border-slate-700 rounded-xl text-white flex items-center justify-between text-xs font-mono-numbers">
+        <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl flex items-center justify-between text-xs font-mono-numbers">
           <div>
-            <span className="text-slate-400 block text-[10px]">Grand Total</span>
-            <span className="font-bold text-white">{formatCurrency(folio.grandTotal, settings.currencySymbol)}</span>
+            <span className="text-zinc-400 block text-[10px]">Total</span>
+            <span className="font-semibold text-zinc-900">{formatCurrency(folio.grandTotal, settings.currencySymbol)}</span>
           </div>
           <div>
-            <span className="text-slate-400 block text-[10px]">Paid So Far</span>
-            <span className="font-bold text-emerald-400">{formatCurrency(folio.totalPaid, settings.currencySymbol)}</span>
+            <span className="text-zinc-400 block text-[10px]">Paid</span>
+            <span className="font-semibold text-emerald-700">{formatCurrency(folio.totalPaid, settings.currencySymbol)}</span>
           </div>
           <div className="text-right">
-            <span className="text-rose-400 block text-[10px] font-medium">Balance Due</span>
-            <span className="text-sm font-bold text-rose-400">
+            <span className="text-zinc-400 block text-[10px] font-medium">Balance Due</span>
+            <span className={`text-xs font-semibold ${folio.balanceDue > 0 ? 'text-rose-600' : 'text-emerald-700'}`}>
               {formatCurrency(folio.balanceDue, settings.currencySymbol)}
             </span>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
           {/* Quick full balance settle button */}
           {balanceDue > 0 && (
-            <div className="flex items-center justify-between p-3 bg-slate-800/80 border border-slate-700 rounded-xl">
-              <span className="text-slate-300 text-xs">Settle full outstanding balance?</span>
+            <div className="flex items-center justify-between p-2.5 bg-zinc-50 border border-zinc-200 rounded-xl">
+              <span className="text-zinc-600 text-xs">Settle full balance</span>
               <button
                 type="button"
                 onClick={() => setAmount(balanceDue)}
-                className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-md text-xs transition-colors cursor-pointer"
+                className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg text-xs transition-colors cursor-pointer shadow-xs"
               >
                 Pay Full ({formatCurrency(balanceDue, settings.currencySymbol)})
               </button>
@@ -106,8 +103,8 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({ stay, isOpen, 
 
           {/* Amount */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">
-              Payment Amount ({settings.currencySymbol}) <span className="text-rose-400">*</span>
+            <label className="block font-medium text-zinc-700 mb-1">
+              Payment Amount ({settings.currencySymbol}) <span className="text-rose-500">*</span>
             </label>
             <input
               type="number"
@@ -117,65 +114,65 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({ stay, isOpen, 
               placeholder="0.00"
               value={amount}
               onChange={(e) => setAmount(e.target.value ? parseFloat(e.target.value) : '')}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-mono-numbers focus:border-indigo-500 focus:outline-none"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 font-mono-numbers focus:bg-white focus:border-zinc-900 focus:outline-none"
             />
           </div>
 
           {/* Payment Method */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">Payment Method</label>
+            <label className="block font-medium text-zinc-700 mb-1">Payment Method</label>
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value as any)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:border-indigo-500 focus:outline-none"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 focus:bg-white focus:border-zinc-900 focus:outline-none"
             >
-              <option value="upi">UPI / QR Code (GPay, PhonePe, Paytm)</option>
-              <option value="card">Credit / Debit Card (POS Machine)</option>
-              <option value="cash">Cash Received at Desk</option>
-              <option value="bank_transfer">Direct Bank Wire / NEFT / RTGS</option>
-              <option value="other">Other Settlement</option>
+              <option value="upi">UPI / QR Code</option>
+              <option value="card">Card (POS)</option>
+              <option value="cash">Cash Desk</option>
+              <option value="bank_transfer">Bank Wire / Transfer</option>
+              <option value="other">Other</option>
             </select>
           </div>
 
           {/* Reference / Transaction ID */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">
-              Transaction Ref / UTR / Auth Code
+            <label className="block font-medium text-zinc-700 mb-1">
+              Transaction Reference / UTR (Optional)
             </label>
             <input
               type="text"
-              placeholder="e.g. UPI/2026/89421 or POS-Auth-992"
+              placeholder="e.g. UPI/2026/89421"
               value={referenceNumber}
               onChange={(e) => setReferenceNumber(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none font-mono-numbers"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none font-mono-numbers"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block font-medium text-slate-300 mb-1">Internal Note (Optional)</label>
+            <label className="block font-medium text-zinc-700 mb-1">Note (Optional)</label>
             <input
               type="text"
               placeholder="e.g. Paid in full at front counter"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-indigo-500 focus:outline-none"
+              className="w-full px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-zinc-900 placeholder-zinc-400 focus:bg-white focus:border-zinc-900 focus:outline-none"
             />
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+          <div className="pt-2 border-t border-zinc-100 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer font-medium"
+              className="px-3.5 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-colors cursor-pointer font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium rounded-lg shadow-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {isSubmitting ? 'Recording...' : 'Record Payment'}
             </button>
@@ -185,3 +182,4 @@ export const AddPaymentModal: React.FC<AddPaymentModalProps> = ({ stay, isOpen, 
     </div>
   );
 };
+

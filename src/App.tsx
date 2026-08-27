@@ -59,28 +59,28 @@ function MainAppContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 text-white space-y-4 select-none">
-        <div className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xl font-bold shadow-lg animate-pulse">
+      <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center p-6 text-zinc-900 space-y-3 select-none">
+        <div className="w-10 h-10 rounded-xl bg-zinc-900 text-white flex items-center justify-center text-sm font-semibold shadow-xs">
           GH
         </div>
-        <div className="text-center space-y-1.5">
-          <h2 className="text-lg font-bold text-white">Loading Hotel Management System...</h2>
-          <p className="text-xs text-slate-400">Syncing rooms, active stays & billing folios</p>
+        <div className="text-center space-y-1">
+          <h2 className="text-sm font-semibold text-zinc-900">Loading Property Manager...</h2>
+          <p className="text-xs text-zinc-500">Syncing rooms, guests & folios</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans antialiased selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900 flex font-sans antialiased selection:bg-zinc-900 selection:text-white">
       {/* Navigation Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-900">
+      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50">
         <Header onQuickCheckIn={handleQuickCheckIn} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+        <main className="flex-1 p-5 sm:p-7 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {activeTab === 'dashboard' && (
             <DashboardOverview
               onCheckInClick={handleQuickCheckIn}
