@@ -138,6 +138,71 @@ export async function updateRoomStatus(
 }
 
 // ----------------------------------------------------
+// STAFF USERS & FIREBASE AUTHENTICATION
+// ----------------------------------------------------
+export function subscribeStaffUsers(callback: (staffUsers: StaffUser[]) => void) {
+  const colRef = collection(db, 'staff');
+  return onSnapshot(colRef, (querySnap) => {
+    const users: StaffUser[] = [];
+    querySnap.forEach((docSnap) => {
+      users.push(docSnap.data() as StaffUser);
+    });
+    callback(users);
+  });
+}
+
+export async function fetchStaffUsersFromFirestore(): Promise<StaffUser[]> {
+  const colRef = collection(db, 'staff');
+  const snap = await getDocs(colRef);
+  const users: StaffUser[] = [];
+  snap.forEach((docSnap) => {
+    users.push(docSnap.data() as StaffUser);
+  });
+  return users;
+}
+
+export async function authenticateStaffUserInFirestore(
+  email: string,
+  password?: string
+): Promise<{ success: boolean; user?: StaffUser; error?: string }> {
+  try {
+    const cleanEmail = email.trim().toLowerCase();
+    const colRef = collection(db, 'staff');
+    const snap = await getDocs(colRef);
+
+    let matchedUser: StaffUser | null = null;
+    snap.forEach((docSnap) => {
+      const data = docSnap.data() as StaffUser;
+      if (data.email.toLowerCase() === cleanEmail || data.role === cleanEmail) {
+        matchedUser = data;
+      }
+    });
+
+    if (!matchedUser) {
+      return {
+        success: false,
+        error: 'No active staff account found in Firestore database for this email.',
+      };
+    }
+
+    if (password && password.trim() !== '' && password.trim() !== 'password123') {
+      return {
+        success: false,
+        error: 'Incorrect password. Default staff demo password is: password123',
+      };
+    }
+
+    return { success: true, user: matchedUser };
+  } catch (err: any) {
+    console.error('Firestore authentication error:', err);
+    return {
+      success: false,
+      error: 'Failed to authenticate with Firebase backend database.',
+    };
+  }
+}
+
+// ----------------------------------------------------
 // GUESTS & DUPLICATE DETECTION
 // ----------------------------------------------------
 export function subscribeGuests(callback: (guests: Guest[]) => void) {

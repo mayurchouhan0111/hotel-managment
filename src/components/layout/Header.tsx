@@ -6,6 +6,8 @@ import {
   ChevronDown,
   Building2,
   Database,
+  LogOut,
+  UserCheck,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -17,7 +19,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn }) => {
   const { settings, rooms, seedInitialData } = useHotel();
-  const { currentUser, switchStaffUser, availableStaffUsers } = useAuth();
+  const { currentUser, switchStaffUser, availableStaffUsers, logout } = useAuth();
   const [showStaffMenu, setShowStaffMenu] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -32,6 +34,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn })
   const occupiedCount = rooms.filter((r) => r.status === 'occupied').length;
   const availableCount = rooms.filter((r) => r.status === 'available').length;
   const occupancyPercent = Math.round((occupiedCount / totalRooms) * 100);
+
+  const activeUserName = currentUser?.name || 'Staff User';
+  const activeUserRole = currentUser?.role || 'staff';
 
   return (
     <header id="main-app-header" className="bg-white border-b border-zinc-200 sticky top-0 z-30 select-none">
@@ -101,18 +106,21 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn })
               onClick={() => setShowStaffMenu(!showStaffMenu)}
               className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-lg border border-zinc-200 hover:border-zinc-300 bg-white hover:bg-zinc-50 transition-colors text-left cursor-pointer"
             >
-              <div className="w-6 h-6 rounded bg-zinc-100 text-zinc-800 flex items-center justify-center font-semibold text-xs border border-zinc-200">
-                {currentUser.name.charAt(0)}
+              <div className="w-6 h-6 rounded bg-zinc-900 text-white flex items-center justify-center font-semibold text-xs shadow-xs">
+                {activeUserName.charAt(0)}
               </div>
               <div className="hidden sm:block">
                 <div className="text-xs font-medium text-zinc-900 leading-tight">
-                  {currentUser.name}
+                  {activeUserName}
+                </div>
+                <div className="text-[10px] text-zinc-400 capitalize font-mono-numbers">
+                  {activeUserRole}
                 </div>
               </div>
               <ChevronDown className="w-3 h-3 text-zinc-400" />
             </button>
 
-            {/* Staff Switcher Dropdown */}
+            {/* Staff Switcher & Logout Dropdown */}
             {showStaffMenu && (
               <>
                 <div
@@ -120,15 +128,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn })
                   onClick={() => setShowStaffMenu(false)}
                 />
                 <div className="absolute right-0 mt-1.5 w-64 bg-white border border-zinc-200 rounded-xl p-1.5 z-50 shadow-lg">
-                  <div className="px-2.5 py-1.5 border-b border-zinc-100">
-                    <p className="text-xs font-medium text-zinc-900">
-                      Switch Active Staff Role
-                    </p>
-                    <p className="text-[10px] text-zinc-400">
-                      Preview different RBAC permissions
-                    </p>
+                  <div className="px-2.5 py-2 border-b border-zinc-100 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-semibold text-zinc-900">{activeUserName}</p>
+                      <p className="text-[10px] text-zinc-400 capitalize">{activeUserRole} Account</p>
+                    </div>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 font-mono">
+                      {currentUser?.employeeId || 'EMP'}
+                    </span>
                   </div>
+
                   <div className="py-1 space-y-0.5">
+                    <div className="px-2.5 py-1 text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
+                      Switch Role Profile
+                    </div>
                     {availableStaffUsers.map((staff) => (
                       <button
                         key={staff.id}
@@ -137,7 +150,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn })
                           setShowStaffMenu(false);
                         }}
                         className={`w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between text-xs transition-colors cursor-pointer ${
-                          currentUser.id === staff.id
+                          currentUser?.id === staff.id
                             ? 'bg-zinc-100 text-zinc-900 font-medium'
                             : 'hover:bg-zinc-50 text-zinc-600 hover:text-zinc-900'
                         }`}
@@ -145,23 +158,38 @@ export const Header: React.FC<HeaderProps> = ({ onOpenCheckIn, onQuickCheckIn })
                         <div className="flex items-center gap-2">
                           <div
                             className={`w-5 h-5 rounded flex items-center justify-center font-medium text-[11px] ${
-                              currentUser.id === staff.id ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-700'
+                              currentUser?.id === staff.id ? 'bg-zinc-900 text-white' : 'bg-zinc-100 text-zinc-700'
                             }`}
                           >
                             {staff.name.charAt(0)}
                           </div>
                           <div>
                             <div className="font-medium text-xs text-zinc-900">{staff.name}</div>
-                            <div className="text-[10px] text-zinc-400 font-mono-numbers">
+                            <div className="text-[10px] text-zinc-400 capitalize">
                               {staff.role}
                             </div>
                           </div>
                         </div>
-                        {currentUser.id === staff.id && (
+                        {currentUser?.id === staff.id && (
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         )}
                       </button>
                     ))}
+                  </div>
+
+                  {/* Logout Action */}
+                  <div className="pt-1.5 mt-1 border-t border-zinc-100">
+                    <button
+                      id="logout-btn"
+                      onClick={() => {
+                        setShowStaffMenu(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg flex items-center gap-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-medium cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5 text-red-500" />
+                      <span>Log Out of Staff Portal</span>
+                    </button>
                   </div>
                 </div>
               </>

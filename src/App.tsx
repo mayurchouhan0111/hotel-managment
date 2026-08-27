@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { HotelProvider, useHotel } from './context/HotelContext';
 import { Header } from './components/layout/Header';
 import { Sidebar } from './components/layout/Sidebar';
@@ -17,9 +17,11 @@ import { AddChargeModal } from './components/billing/AddChargeModal';
 import { AddPaymentModal } from './components/billing/AddPaymentModal';
 import { CheckoutModal } from './components/billing/CheckoutModal';
 import { ToastContainer } from './components/common/Toast';
+import { LoginPage } from './components/auth/LoginPage';
 import { Room, Guest, Stay, Invoice } from './types/hotel';
 
 function MainAppContent() {
+  const { isAuthenticated, currentUser } = useAuth();
   const { isLoading, toast, hideToast, stays, getInvoiceByStayId } = useHotel();
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -33,6 +35,10 @@ function MainAppContent() {
   const [paymentStay, setPaymentStay] = useState<Stay | null>(null);
   const [checkoutStay, setCheckoutStay] = useState<Stay | null>(null);
   const [viewInvoice, setViewInvoice] = useState<Invoice | null>(null);
+
+  if (!isAuthenticated || !currentUser) {
+    return <LoginPage />;
+  }
 
   // Handlers for cross-component triggers
   const handleOpenCheckInWithRoom = (room: Room) => {
