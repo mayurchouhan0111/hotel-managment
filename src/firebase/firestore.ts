@@ -790,7 +790,7 @@ export async function performCheckout(
     };
 
     // 1. Save Invoice
-    transaction.set(doc(db, 'invoices', invoiceId), createdInvoice);
+    transaction.set(doc(db, 'invoices', invoiceId), stripUndefined(createdInvoice as Record<string, any>));
 
     // 2. Update Folio
     transaction.update(folioRef, {

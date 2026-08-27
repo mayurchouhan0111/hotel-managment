@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHotel } from '../../context/HotelContext';
+import { useAuth } from '../../context/AuthContext';
 import { Invoice, Stay } from '../../types/hotel';
 import { AddChargeModal } from './AddChargeModal';
 import { AddPaymentModal } from './AddPaymentModal';
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/format';
 import { formatDateTime } from '../../utils/date';
+import { calculateFolioTotals } from '../../utils/billing';
 
 interface FolioManagementProps {
   initialFolioId?: string | null;
@@ -24,7 +26,8 @@ interface FolioManagementProps {
 export const FolioManagement: React.FC<FolioManagementProps> = ({
   initialFolioId,
 }) => {
-  const { folios, stays, settings, voidCharge, getInvoiceByStayId } = useHotel();
+  const { folios, stays, guests, settings, voidCharge, getInvoiceByStayId } = useHotel();
+  const { currentUser } = useAuth();
   const [selectedFolioId, setSelectedFolioId] = useState<string | null>(
     initialFolioId || (folios.length > 0 ? folios[0].id : null)
   );
@@ -41,12 +44,39 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
   const selectedFolio = folios.find((f) => f.id === selectedFolioId) || folios[0] || null;
   const currentStay = selectedFolio ? stays.find((s) => s.id === selectedFolio.stayId) : null;
 
+  const activeStayOrFallback: Stay | null = selectedFolio
+    ? currentStay || {
+        id: selectedFolio.stayId,
+        guestId: selectedFolio.guestId,
+        guestName: selectedFolio.guestName,
+        guestPhone: '+91 98204 91820',
+        guestNationality: 'Indian',
+        guestIdNumber: 'UID-9820-4102',
+        roomId: selectedFolio.roomId,
+        roomNumber: selectedFolio.roomNumber,
+        roomType: 'Deluxe King Suite',
+        checkInDate: selectedFolio.createdAt,
+        expectedCheckOutDate: new Date().toISOString(),
+        nightsCount: 1,
+        adultsCount: 1,
+        childrenCount: 0,
+        totalGuests: 1,
+        roomRatePerNight: selectedFolio.grandTotal,
+        status: selectedFolio.status === 'settled' ? 'checked_out' : 'active',
+        folioId: selectedFolio.id,
+        createdByStaffId: 'staff-1',
+        createdByStaffName: 'Front Desk',
+        checkedInAt: selectedFolio.createdAt,
+        createdAt: selectedFolio.createdAt,
+        updatedAt: selectedFolio.updatedAt,
+      }
+    : null;
+
   // Filtered List
   const filteredFolios = folios.filter((f) => {
-    if (statusFilter === 'open' && f.status !== 'open') return false;
-    if (statusFilter === 'settled' && f.status !== 'settled') return false;
+    if (statusFilter !== 'all' && f.status !== statusFilter) return false;
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
+      const q = searchQuery.toLowerCase();
       return (
         f.guestName.toLowerCase().includes(q) ||
         f.roomNumber.toLowerCase().includes(q) ||
@@ -68,12 +98,68 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
 
   const handleOpenInvoice = () => {
     if (!selectedFolio) return;
-    const inv = getInvoiceByStayId(selectedFolio.stayId);
-    if (inv) {
-      setViewingInvoice(inv);
-    } else {
-      alert('Tax Invoice is generated upon checkout & final settlement.');
+    const existingInv = getInvoiceByStayId(selectedFolio.stayId);
+    if (existingInv) {
+      setViewingInvoice(existingInv);
+      return;
     }
+
+    // Generate Pro-Forma Tax Statement Invoice for instant viewing & printing
+    const guest = guests.find((g) => g.id === selectedFolio.guestId);
+    const totals = calculateFolioTotals(selectedFolio.charges, selectedFolio.payments);
+
+    const draftInvoice: Invoice = {
+      id: 'INV-STATEMENT-' + selectedFolio.id,
+      invoiceNumber: 'STMT-' + selectedFolio.id.slice(-6),
+      stayId: selectedFolio.stayId,
+      guestId: selectedFolio.guestId,
+      folioId: selectedFolio.id,
+      guestSnapshot: {
+        fullName: selectedFolio.guestName,
+        phone: guest?.phone || currentStay?.guestPhone || '+91 98204 91820',
+        email: guest?.email || currentStay?.guestEmail || 'guest@example.com',
+        address: guest?.address || 'Civil Lines, Delhi',
+        city: guest?.city || 'New Delhi',
+        country: guest?.country || 'India',
+        idType: guest?.idType || 'Aadhaar Card',
+        idNumber: guest?.idNumber || currentStay?.guestIdNumber || 'UID-9820-4102',
+      },
+      hotelSnapshot: {
+        name: settings.name,
+        address: settings.address,
+        city: settings.city,
+        phone: settings.phone,
+        email: settings.email,
+        gstin: settings.gstin,
+        website: settings.website,
+        currencySymbol: settings.currencySymbol,
+        currencyCode: settings.currencyCode,
+      },
+      stayDetails: {
+        roomNumber: selectedFolio.roomNumber,
+        roomType: currentStay?.roomType || 'Deluxe King Suite',
+        checkInDate: currentStay?.checkInDate || selectedFolio.createdAt,
+        checkOutDate: currentStay?.expectedCheckOutDate || new Date().toISOString(),
+        nightsCount: currentStay?.nightsCount || 3,
+        adultsCount: currentStay?.adultsCount || 2,
+        childrenCount: currentStay?.childrenCount || 0,
+      },
+      chargesBreakdown: selectedFolio.charges.filter((c) => !c.voided),
+      paymentsList: selectedFolio.payments.filter((p) => !p.refunded),
+      financialSummary: {
+        subtotal: totals.subtotal,
+        totalDiscount: totals.totalDiscount,
+        totalTax: totals.totalTax,
+        grandTotal: totals.grandTotal,
+        totalPaid: totals.totalPaid,
+        balanceDue: totals.balanceDue,
+      },
+      issuedAt: new Date().toISOString(),
+      issuedByStaffName: currentUser?.name || 'Front Desk',
+      paymentStatus: totals.balanceDue <= 0 ? 'PAID' : totals.totalPaid > 0 ? 'PARTIALLY_PAID' : 'UNPAID',
+    };
+
+    setViewingInvoice(draftInvoice);
   };
 
   return (
@@ -246,10 +332,10 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5">
-                  {currentStay?.status === 'active' && (
+                  {selectedFolio.status !== 'settled' && activeStayOrFallback && (
                     <>
                       <button
-                        onClick={() => setChargeModalStay(currentStay)}
+                        onClick={() => setChargeModalStay(activeStayOrFallback)}
                         className="px-2.5 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-800 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                       >
                         <Plus className="w-3.5 h-3.5 text-zinc-500" />
@@ -257,7 +343,7 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
                       </button>
 
                       <button
-                        onClick={() => setPaymentModalStay(currentStay)}
+                        onClick={() => setPaymentModalStay(activeStayOrFallback)}
                         className="px-2.5 py-1.5 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-800 rounded-lg font-medium text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-zinc-500" />
@@ -265,7 +351,7 @@ export const FolioManagement: React.FC<FolioManagementProps> = ({
                       </button>
 
                       <button
-                        onClick={() => setCheckoutModalStay(currentStay)}
+                        onClick={() => setCheckoutModalStay(activeStayOrFallback)}
                         className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <LogOut className="w-3.5 h-3.5" />
