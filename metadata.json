@@ -1,0 +1,6 @@
+{
+  "name": "Hotel Guest & Billing Management System",
+  "description": "Production-grade hotel PMS for staff to manage guest onboarding, KYC documents, room allocation, active stays, billing folios, payments, and checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
