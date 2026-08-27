@@ -117,7 +117,7 @@ export const StayDetailModal: React.FC<StayDetailModalProps> = ({
                   </div>
                 )}
                 <div className="text-zinc-400 text-[11px] pt-1">
-                  Guests: {stay.adults} Adults, {stay.children || 0} Children
+                  Guests: {stay.adultsCount} Adults, {stay.childrenCount || 0} Children
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ export const StayDetailModal: React.FC<StayDetailModalProps> = ({
                 <div className="pt-1 flex items-center justify-between">
                   <span className="text-zinc-400">Room Rate:</span>
                   <span className="font-semibold text-zinc-900">
-                    {formatCurrency(stay.dailyRate, settings.currencySymbol)}/nt
+                    {formatCurrency(stay.roomRatePerNight, settings.currencySymbol)}/nt
                   </span>
                 </div>
               </div>
@@ -166,13 +166,13 @@ export const StayDetailModal: React.FC<StayDetailModalProps> = ({
                 <div className="p-2.5 rounded-lg bg-white border border-zinc-200">
                   <div className="text-[11px] text-zinc-400">Total Charges</div>
                   <div className="text-xs font-semibold text-zinc-900 font-mono-numbers mt-0.5">
-                    {formatCurrency(folio.totalCharges, settings.currencySymbol)}
+                    {formatCurrency(folio.grandTotal, settings.currencySymbol)}
                   </div>
                 </div>
                 <div className="p-2.5 rounded-lg bg-white border border-zinc-200">
                   <div className="text-[11px] text-zinc-400">Total Paid</div>
                   <div className="text-xs font-semibold text-emerald-700 font-mono-numbers mt-0.5">
-                    {formatCurrency(folio.totalPayments, settings.currencySymbol)}
+                    {formatCurrency(folio.totalPaid, settings.currencySymbol)}
                   </div>
                 </div>
                 <div className="p-2.5 rounded-lg bg-white border border-zinc-200">

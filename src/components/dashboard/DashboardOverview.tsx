@@ -204,7 +204,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                         {formatCurrency(room.baseRate, settings.currencySymbol)}/nt
                       </span>
                     )}
-                    <span className="text-[10px] text-zinc-400">Fl {room.floor}</span>
+                    <span className="text-[10px] text-zinc-400">{room.maxOccupancy} max</span>
                   </div>
                 </div>
               );

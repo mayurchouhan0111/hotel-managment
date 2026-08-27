@@ -25,14 +25,16 @@ import { generateId } from '../../utils/id';
 interface CheckInWizardProps {
   isOpen: boolean;
   onClose: () => void;
-  preSelectedRoom?: Room | null;
-  onSuccessStayCreated: (stayId: string) => void;
+  preselectedRoom?: Room | null;
+  preselectedGuest?: Guest | null;
+  onSuccessStayCreated?: (stayId: string) => void;
 }
 
 export const CheckInWizard: React.FC<CheckInWizardProps> = ({
   isOpen,
   onClose,
-  preSelectedRoom,
+  preselectedRoom,
+  preselectedGuest,
   onSuccessStayCreated,
 }) => {
   const { rooms, guests, settings, checkIn, findDuplicateGuests } = useHotel();
@@ -70,7 +72,7 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // STEP 3: Room & Stay Config
-  const [selectedRoomId, setSelectedRoomId] = useState<string>(preSelectedRoom?.id || '');
+  const [selectedRoomId, setSelectedRoomId] = useState<string>(preselectedRoom?.id || '');
   const [checkInDateTime, setCheckInDateTime] = useState<string>(
     () => new Date().toISOString().slice(0, 16)
   );
@@ -84,7 +86,7 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
   const [childrenCount, setChildrenCount] = useState<number>(0);
   const [customRate, setCustomRate] = useState<number | ''>('');
   const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [taxRate, setTaxRate] = useState<number>(settings.taxPercentage || 12);
+  const [taxRate, setTaxRate] = useState<number>(settings.standardTaxRate || 12);
   const [purposeOfVisit, setPurposeOfVisit] = useState('');
   const [specialRequests, setSpecialRequests] = useState('');
 
@@ -276,7 +278,9 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
       };
 
       const result = await checkIn(checkInPayload);
-      onSuccessStayCreated(result.stay.id);
+      if (onSuccessStayCreated) {
+        onSuccessStayCreated(result.stay.id);
+      }
       onClose();
     } catch (err: any) {
       console.error('Check-in error:', err);
@@ -811,6 +815,9 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                   {rooms.map((room) => {
                     const isAvail = room.status === 'available';
                     const isSelected = selectedRoomId === room.id;
+                    const totalGuests = adultsCount + childrenCount;
+                    const fitsCapacity = totalGuests <= room.maxOccupancy;
+                    const isOverCapacity = isAvail && !fitsCapacity;
 
                     return (
                       <div
@@ -818,9 +825,11 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                         onClick={() => {
                           if (isAvail) setSelectedRoomId(room.id);
                         }}
-                        className={`p-3 rounded-xl border transition-all text-xs flex flex-col justify-between h-24 relative ${
+                        className={`p-3 rounded-xl border transition-all text-xs flex flex-col justify-between h-28 relative ${
                           !isAvail
                             ? 'opacity-40 bg-zinc-100 border-zinc-200 cursor-not-allowed'
+                            : isOverCapacity
+                            ? 'bg-rose-50/50 border-rose-200 cursor-pointer hover:border-rose-300'
                             : isSelected
                             ? 'border-zinc-900 bg-zinc-50 shadow-xs cursor-pointer ring-1 ring-zinc-900'
                             : 'bg-white border-zinc-200 hover:border-zinc-400 cursor-pointer shadow-xs'
@@ -845,13 +854,30 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                             {formatCurrency(room.baseRate, settings.currencySymbol)}
                             <span className="text-[10px] text-zinc-400 font-normal">/nt</span>
                           </span>
-                          <span className="text-zinc-400">Fl {room.floor}</span>
+                          <span className={`font-medium ${isOverCapacity ? 'text-rose-600' : 'text-zinc-400'}`}>
+                            {room.maxOccupancy} max
+                          </span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               </div>
+
+              {/* Capacity Warning */}
+              {selectedRoomId && selectedRoom && (adultsCount + childrenCount) > selectedRoom.maxOccupancy && (
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-xs">
+                  <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-semibold text-rose-800">Exceeds Room Capacity</div>
+                    <p className="text-rose-700 mt-0.5">
+                      {selectedRoom.type} (Room #{selectedRoom.roomNumber}) allows max {selectedRoom.maxOccupancy} guest{selectedRoom.maxOccupancy > 1 ? 's' : ''}.
+                      You have {adultsCount + childrenCount} guest{(adultsCount + childrenCount) > 1 ? 's' : ''} ({adultsCount} adult{adultsCount > 1 ? 's' : ''}{childrenCount > 0 ? `, ${childrenCount} child${childrenCount > 1 ? 'ren' : ''}` : ''}).
+                      Please select a larger room or reduce the guest count.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Pricing Customization & Special Requests */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
@@ -1102,6 +1128,11 @@ export const CheckInWizard: React.FC<CheckInWizardProps> = ({
                 onClick={() => {
                   if (!selectedRoomId) {
                     alert('Please select a room.');
+                    return;
+                  }
+                  const room = rooms.find(r => r.id === selectedRoomId);
+                  if (room && (adultsCount + childrenCount) > room.maxOccupancy) {
+                    alert(`Cannot proceed: ${room.type} (Room #${room.roomNumber}) allows max ${room.maxOccupancy} guest${room.maxOccupancy > 1 ? 's' : ''}, but you have ${adultsCount + childrenCount} guest${(adultsCount + childrenCount) > 1 ? 's' : ''}. Please select a larger room or reduce guest count.`);
                     return;
                   }
                   setCurrentStep(4);

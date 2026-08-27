@@ -100,7 +100,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
             <div className="text-right">
               <span className="text-zinc-400 block text-[10px]">Room Tariff</span>
-              <span className="font-semibold text-zinc-900 font-mono-numbers">{formatCurrency(stay.dailyRate, settings.currencySymbol)}/nt</span>
+              <span className="font-semibold text-zinc-900 font-mono-numbers">{formatCurrency(stay.roomRatePerNight, settings.currencySymbol)}/nt</span>
             </div>
           </div>
 

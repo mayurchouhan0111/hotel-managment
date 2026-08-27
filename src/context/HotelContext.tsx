@@ -29,8 +29,11 @@ import {
   updateRoomStatus as firestoreUpdateRoomStatus,
   saveGuest as firestoreSaveGuest,
   updateHotelSettings as firestoreUpdateSettings,
+  findDuplicateGuests as firestoreFindDuplicateGuests,
 } from '../firebase/firestore';
 import { checkAndSeedInitialData, DEFAULT_HOTEL_SETTINGS } from '../firebase/seed';
+import { db } from '../firebase/config';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
 
 export interface ToastMessage {
@@ -72,6 +75,9 @@ interface HotelContextType {
   saveGuest: (guest: Guest, isNew: boolean) => Promise<Guest>;
   updateSettings: (newSettings: HotelSettings) => Promise<void>;
   seedInitialData: () => Promise<boolean>;
+  findDuplicateGuests: (params: { phone: string; idNumber?: string; email?: string; excludeGuestId?: string }) => Promise<Guest[]>;
+  updateGuest: (guestId: string, updates: Partial<Guest>) => Promise<void>;
+  resetDemoData: () => Promise<boolean>;
 }
 
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
@@ -287,6 +293,49 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  // Find duplicate guests
+  const findDuplicateGuests = async (params: {
+    phone: string;
+    idNumber?: string;
+    email?: string;
+    excludeGuestId?: string;
+  }) => {
+    try {
+      return await firestoreFindDuplicateGuests(params);
+    } catch (err: any) {
+      console.error('Error finding duplicates:', err);
+      return [];
+    }
+  };
+
+  // Update guest profile
+  const updateGuest = async (guestId: string, updates: Partial<Guest>) => {
+    try {
+      const guestRef = doc(db, 'guests', guestId);
+      await updateDoc(guestRef, { ...updates, updatedAt: new Date().toISOString() });
+      showToast('success', 'Guest Updated', `Profile ${guestId} updated successfully.`);
+    } catch (err: any) {
+      showToast('error', 'Guest Update Failed', err.message || 'Error occurred.');
+      throw err;
+    }
+  };
+
+  // Reset demo data
+  const resetDemoData = async () => {
+    try {
+      const success = await checkAndSeedInitialData();
+      if (success) {
+        showToast('success', 'Demo Data Reset', 'Fresh hotel data has been loaded.');
+      } else {
+        showToast('info', 'Data Already Exists', 'Database already contains records.');
+      }
+      return success;
+    } catch (err: any) {
+      showToast('error', 'Reset Failed', err.message);
+      return false;
+    }
+  };
+
   return (
     <HotelContext.Provider
       value={{
@@ -317,6 +366,9 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         saveGuest,
         updateSettings,
         seedInitialData,
+        findDuplicateGuests,
+        updateGuest,
+        resetDemoData,
       }}
     >
       {children}

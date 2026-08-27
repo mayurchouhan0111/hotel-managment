@@ -17,6 +17,8 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
     window.print();
   };
 
+  const currency = invoice.hotelSnapshot.currencySymbol;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-zinc-900/40 backdrop-blur-xs overflow-y-auto print:p-0 print:bg-white select-none">
       <div className="bg-white max-w-3xl w-full rounded-2xl border border-zinc-200 shadow-xl overflow-hidden flex flex-col my-auto max-h-[94vh] print:max-h-none print:shadow-none print:border-none print:rounded-none">
@@ -27,8 +29,12 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
               Tax Invoice #{invoice.invoiceNumber}
             </span>
             <span className="text-zinc-300">•</span>
-            <span className="text-emerald-700 font-medium bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[11px]">
-              Paid in Full
+            <span className={`font-medium px-2 py-0.5 rounded text-[11px] ${
+              invoice.paymentStatus === 'PAID'
+                ? 'text-emerald-700 bg-emerald-50 border border-emerald-200'
+                : 'text-amber-700 bg-amber-50 border border-amber-200'
+            }`}>
+              {invoice.paymentStatus === 'PAID' ? 'Paid in Full' : invoice.paymentStatus === 'PARTIALLY_PAID' ? 'Partially Paid' : 'Unpaid'}
             </span>
           </div>
 
@@ -136,7 +142,7 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
             </div>
           </div>
 
-          {/* Itemized Table */}
+          {/* Itemized Charges Table */}
           <div className="border border-zinc-200 rounded-xl overflow-hidden">
             <table className="w-full text-left text-xs">
               <thead className="bg-zinc-50 text-zinc-600 border-b border-zinc-200">
@@ -144,36 +150,32 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
                   <th className="py-2 px-3 font-medium">Item & Description</th>
                   <th className="py-2 px-3 font-medium text-center">Qty</th>
                   <th className="py-2 px-3 font-medium text-right">Price</th>
-                  <th className="py-2 px-3 font-medium text-right">Taxable</th>
-                  <th className="py-2 px-3 font-medium text-right">GST</th>
-                  <th className="py-2 px-3 font-medium text-right">GST Amt</th>
+                  <th className="py-2 px-3 font-medium text-right">Tax Rate</th>
+                  <th className="py-2 px-3 font-medium text-right">Tax Amt</th>
                   <th className="py-2 px-3 font-medium text-right">Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-100 bg-white">
-                {invoice.lineItems.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-zinc-50/50">
+                {invoice.chargesBreakdown.map((charge) => (
+                  <tr key={charge.id} className="hover:bg-zinc-50/50">
                     <td className="py-2 px-3 font-medium text-zinc-900">
-                      {item.description}
-                      <span className="text-[10px] text-zinc-400 ml-1.5 font-normal">({item.category})</span>
+                      {charge.description}
+                      <span className="text-[10px] text-zinc-400 ml-1.5 font-normal">({charge.category})</span>
                     </td>
                     <td className="py-2 px-3 text-center font-mono-numbers text-zinc-600">
-                      {item.quantity}
+                      {charge.quantity}
                     </td>
                     <td className="py-2 px-3 text-right font-mono-numbers text-zinc-600">
-                      {formatCurrency(item.unitPrice, invoice.financialSummary.currency)}
-                    </td>
-                    <td className="py-2 px-3 text-right font-mono-numbers text-zinc-600">
-                      {formatCurrency(item.taxableAmount, invoice.financialSummary.currency)}
+                      {formatCurrency(charge.unitPrice, currency)}
                     </td>
                     <td className="py-2 px-3 text-right font-mono-numbers text-zinc-500">
-                      {item.taxRate}%
+                      {charge.taxRate}%
                     </td>
                     <td className="py-2 px-3 text-right font-mono-numbers text-zinc-500">
-                      {formatCurrency(item.taxAmount, invoice.financialSummary.currency)}
+                      {formatCurrency(charge.taxAmount, currency)}
                     </td>
                     <td className="py-2 px-3 text-right font-mono-numbers font-semibold text-zinc-900">
-                      {formatCurrency(item.total, invoice.financialSummary.currency)}
+                      {formatCurrency(charge.total, currency)}
                     </td>
                   </tr>
                 ))}
@@ -181,18 +183,21 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
             </table>
           </div>
 
-          {/* Financial Summary & Tax Breakup */}
+          {/* Financial Summary & Payments */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-6 pt-2">
             <div className="space-y-2 max-w-sm w-full">
               <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 text-zinc-700 space-y-1">
                 <span className="font-semibold text-zinc-900 block text-xs">Settlements</span>
                 <div className="space-y-1 pt-0.5 font-mono-numbers text-xs">
-                  {invoice.settlements.map((s, idx) => (
-                    <div key={idx} className="flex justify-between text-[11px]">
-                      <span className="uppercase text-zinc-500">{s.method} ({s.referenceNumber || 'Direct'}):</span>
-                      <span className="text-emerald-700 font-medium">{formatCurrency(s.amount, invoice.financialSummary.currency)}</span>
+                  {invoice.paymentsList.map((payment) => (
+                    <div key={payment.id} className="flex justify-between text-[11px]">
+                      <span className="uppercase text-zinc-500">{payment.method} ({payment.referenceNumber || 'Direct'}):</span>
+                      <span className="text-emerald-700 font-medium">{formatCurrency(payment.amount, currency)}</span>
                     </div>
                   ))}
+                  {invoice.paymentsList.length === 0 && (
+                    <div className="text-zinc-400 text-[11px]">No payments recorded</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -200,31 +205,29 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
             <div className="w-full sm:max-w-xs bg-zinc-50 p-3.5 rounded-xl border border-zinc-200 space-y-1.5 font-mono-numbers text-xs">
               <div className="flex justify-between text-zinc-500">
                 <span>Subtotal:</span>
-                <span className="text-zinc-900">{formatCurrency(invoice.financialSummary.subtotal, invoice.financialSummary.currency)}</span>
+                <span className="text-zinc-900">{formatCurrency(invoice.financialSummary.subtotal, currency)}</span>
               </div>
-              {invoice.financialSummary.discountTotal > 0 && (
+              {invoice.financialSummary.totalDiscount > 0 && (
                 <div className="flex justify-between text-emerald-700">
                   <span>Discount:</span>
-                  <span>-{formatCurrency(invoice.financialSummary.discountTotal, invoice.financialSummary.currency)}</span>
+                  <span>-{formatCurrency(invoice.financialSummary.totalDiscount, currency)}</span>
                 </div>
               )}
               <div className="flex justify-between text-zinc-500">
                 <span>Total GST:</span>
-                <span className="text-zinc-900">+{formatCurrency(invoice.financialSummary.totalTax, invoice.financialSummary.currency)}</span>
+                <span className="text-zinc-900">+{formatCurrency(invoice.financialSummary.totalTax, currency)}</span>
               </div>
               <div className="pt-1.5 border-t border-zinc-200 flex justify-between font-semibold text-zinc-900 text-xs">
                 <span>Grand Total:</span>
-                <span>
-                  {formatCurrency(invoice.financialSummary.grandTotal, invoice.financialSummary.currency)}
-                </span>
+                <span>{formatCurrency(invoice.financialSummary.grandTotal, currency)}</span>
               </div>
               <div className="flex justify-between text-emerald-700 pt-0.5">
                 <span>Paid:</span>
-                <span>{formatCurrency(invoice.financialSummary.totalPaid, invoice.financialSummary.currency)}</span>
+                <span>{formatCurrency(invoice.financialSummary.totalPaid, currency)}</span>
               </div>
               <div className="flex justify-between font-medium text-zinc-600">
                 <span>Balance:</span>
-                <span>{formatCurrency(invoice.financialSummary.balanceDue, invoice.financialSummary.currency)}</span>
+                <span>{formatCurrency(invoice.financialSummary.balanceDue, currency)}</span>
               </div>
             </div>
           </div>
@@ -238,4 +241,3 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoice, isOpen, onClo
     </div>
   );
 };
-

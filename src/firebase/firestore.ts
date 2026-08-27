@@ -32,6 +32,14 @@ import {
 } from '../types/hotel';
 import { calculateFolioTotals, calculateChargeItem } from '../utils/billing';
 import { generateId, generateInvoiceNumber, generateReceiptNumber } from '../utils/format';
+
+function stripUndefined(obj: Record<string, any>): Record<string, any> {
+  const clean: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) clean[key] = value;
+  }
+  return clean;
+}
 import { calculateNights } from '../utils/date';
 
 // ----------------------------------------------------
@@ -394,15 +402,15 @@ export async function performCheckIn(payload: CheckInPayload, actor: StaffUser):
       updatedAt: now,
       ...(payload.isNewGuest ? { createdAt: now, createdByStaffName: actor.name } : {}),
     };
-    transaction.set(guestDocRef, updatedGuestPayload, { merge: true });
+    transaction.set(guestDocRef, stripUndefined(updatedGuestPayload as Record<string, any>), { merge: true });
 
     // 2. Create Stay
     const stayDocRef = doc(db, 'stays', stayId);
-    transaction.set(stayDocRef, newStay);
+    transaction.set(stayDocRef, stripUndefined(newStay as Record<string, any>));
 
     // 3. Create Folio
     const folioDocRef = doc(db, 'folios', folioId);
-    transaction.set(folioDocRef, newFolio);
+    transaction.set(folioDocRef, stripUndefined(newFolio as Record<string, any>));
 
     // 4. Mark Room Occupied
     transaction.update(roomDocRef, {

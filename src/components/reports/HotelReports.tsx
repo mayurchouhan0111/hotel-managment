@@ -307,13 +307,13 @@ export const HotelReports: React.FC = () => {
                     <td className="py-2.5 px-3.5 font-medium text-zinc-900">{inv.guestSnapshot.fullName}</td>
                     <td className="py-2.5 px-3.5 font-mono-numbers text-zinc-600">#{inv.stayDetails.roomNumber}</td>
                     <td className="py-2.5 px-3.5 text-right font-mono-numbers text-zinc-600">
-                      {formatCurrency(inv.financialSummary.subtotal, inv.financialSummary.currency)}
+                      {formatCurrency(inv.financialSummary.subtotal, inv.hotelSnapshot.currencySymbol)}
                     </td>
                     <td className="py-2.5 px-3.5 text-right font-mono-numbers text-zinc-500">
-                      {formatCurrency(inv.financialSummary.totalTax, inv.financialSummary.currency)}
+                      {formatCurrency(inv.financialSummary.totalTax, inv.hotelSnapshot.currencySymbol)}
                     </td>
                     <td className="py-2.5 px-3.5 text-right font-mono-numbers font-semibold text-zinc-900">
-                      {formatCurrency(inv.financialSummary.grandTotal, inv.financialSummary.currency)}
+                      {formatCurrency(inv.financialSummary.grandTotal, inv.hotelSnapshot.currencySymbol)}
                     </td>
                   </tr>
                 ))}

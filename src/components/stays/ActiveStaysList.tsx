@@ -204,7 +204,7 @@ export const ActiveStaysList: React.FC<ActiveStaysListProps> = ({
                       {/* Folio Balance */}
                       <td className="py-3 px-3">
                         <div className="text-[11px] font-mono-numbers text-zinc-500">
-                          Rate: {formatCurrency(stay.dailyRate, settings.currencySymbol)}/nt
+                          Rate: {formatCurrency(stay.roomRatePerNight, settings.currencySymbol)}/nt
                         </div>
                         <div className="mt-0.5">
                           <span

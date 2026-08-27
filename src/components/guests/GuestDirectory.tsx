@@ -25,8 +25,8 @@ export const GuestDirectory: React.FC<GuestDirectoryProps> = ({ onCheckInGuest }
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
 
   const filteredGuests = guests.filter((g) => {
-    if (vipFilter === 'vip' && !g.isVip) return false;
-    if (vipFilter === 'regular' && g.isVip) return false;
+    if (vipFilter === 'vip' && !g.vipStatus) return false;
+    if (vipFilter === 'regular' && g.vipStatus) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       return (
@@ -62,7 +62,7 @@ export const GuestDirectory: React.FC<GuestDirectoryProps> = ({ onCheckInGuest }
           <div className="px-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-lg text-xs">
             <span className="text-zinc-400 block text-[10px]">VIP Guests</span>
             <span className="font-semibold text-amber-700 font-mono-numbers">
-              {guests.filter((g) => g.isVip).length}
+              {guests.filter((g) => g.vipStatus).length}
             </span>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const GuestDirectory: React.FC<GuestDirectoryProps> = ({ onCheckInGuest }
             }`}
           >
             <Star className="w-3 h-3 text-amber-600 fill-amber-600" />
-            <span>VIP ({guests.filter((g) => g.isVip).length})</span>
+            <span>VIP ({guests.filter((g) => g.vipStatus).length})</span>
           </button>
           <button
             onClick={() => setVipFilter('regular')}
@@ -105,7 +105,7 @@ export const GuestDirectory: React.FC<GuestDirectoryProps> = ({ onCheckInGuest }
               vipFilter === 'regular' ? 'bg-white text-zinc-900 font-medium shadow-xs' : 'hover:text-zinc-900'
             }`}
           >
-            Standard ({guests.filter((g) => !g.isVip).length})
+            Standard ({guests.filter((g) => !g.vipStatus).length})
           </button>
         </div>
       </div>
@@ -128,7 +128,7 @@ export const GuestDirectory: React.FC<GuestDirectoryProps> = ({ onCheckInGuest }
                   <div>
                     <div className="flex items-center gap-1">
                       <h3 className="font-semibold text-zinc-900 text-xs">{guest.fullName}</h3>
-                      {guest.isVip && (
+                      {guest.vipStatus && (
                         <Star className="w-3 h-3 text-amber-600 fill-amber-600" />
                       )}
                     </div>
