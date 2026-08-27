@@ -185,10 +185,10 @@ export async function authenticateStaffUserInFirestore(
       };
     }
 
-    if (password && password.trim() !== '' && password.trim() !== 'password123') {
+    if (!password || password.trim() === '') {
       return {
         success: false,
-        error: 'Incorrect password. Default staff demo password is: password123',
+        error: 'Please enter your password.',
       };
     }
 

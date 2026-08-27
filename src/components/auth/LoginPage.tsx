@@ -25,8 +25,8 @@ export const LoginPage: React.FC = () => {
   
   const staffList = availableStaffUsers.length > 0 ? availableStaffUsers : INITIAL_STAFF_USERS;
   const [selectedUser, setSelectedUser] = useState<StaffUser>(staffList[0]);
-  const [email, setEmail] = useState<string>(staffList[0]?.email || '');
-  const [password, setPassword] = useState<string>('password123');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export const LoginPage: React.FC = () => {
   const handleSelectStaffUser = (user: StaffUser) => {
     setSelectedUser(user);
     setEmail(user.email);
-    setPassword('password123');
+    setPassword('');
     setError(null);
   };
 
@@ -324,7 +324,7 @@ export const LoginPage: React.FC = () => {
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
                   <span>Password</span>
-                  <span className="text-[10px] text-zinc-500">Demo Password: password123</span>
+                  <span className="text-[10px] text-zinc-500">Required</span>
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
