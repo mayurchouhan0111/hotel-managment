@@ -33,10 +33,18 @@ import {
 import { calculateFolioTotals, calculateChargeItem } from '../utils/billing';
 import { generateId, generateInvoiceNumber, generateReceiptNumber } from '../utils/format';
 
-function stripUndefined(obj: Record<string, any>): Record<string, any> {
+function stripUndefined(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(stripUndefined);
+  }
   const clean: Record<string, any> = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (value !== undefined) clean[key] = value;
+    if (value !== undefined) {
+      clean[key] = stripUndefined(value);
+    }
   }
   return clean;
 }
